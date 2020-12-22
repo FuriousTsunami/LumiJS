@@ -358,9 +358,12 @@ var getRandomColor = function () {
   return color;
 }
 // Code to show Arjun (Delete after)
+
+/*
 for (var i = 0; i < 100; i++) {
   var square = Lumi.addRect(Math.random() * 30, Math.random() * 30, 50, 50, {
     color: getRandomColor()
   });
-  square.addXVel(Math.random() * 30);
+  square.addXVel(Math.random() * 75);
 }
+*/
