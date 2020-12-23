@@ -34,13 +34,14 @@ Lumi.rect = function (x, y, w, h, config) {
     config = {
       mass: 1,
       maxVel: {
-        x: 100,
-        y: 100
+        x: 45,
+        y: 45,
       },
-      restitution: 0.5,
+      restitution: 0,
       static: false,
       collision: true,
       color: "#000000",
+      collisionType: "dynamic",
     };
   }
   if (!config.mass) {
@@ -48,18 +49,18 @@ Lumi.rect = function (x, y, w, h, config) {
   }
   if (!config.maxVel) {
     config.maxVel = {
-      x: 100,
-      y: 100
+      x: 45,
+      y: 45,
     };
   }
   if (!config.maxVel.x) {
-    config.maxVel.x = 100;
+    config.maxVel.x = 45;
   }
   if (!config.maxVel.y) {
-    config.maxVel.y = 100;
+    config.maxVel.y = 45;
   }
   if (!config.restitution) {
-    config.restitution = 0.5;
+    config.restitution = 0;
   }
   if (!config.static) {
     config.static = false;
@@ -70,7 +71,11 @@ Lumi.rect = function (x, y, w, h, config) {
   if (!config.color) {
     config.color = "#000000";
   }
+  if (!config.collisionType) {
+    config.collisionType = "dynamic";
+  }
   this.type = "block";
+  this.collisionType = config.collisionType;
   this.x = x;
   this.y = y;
   this.width = w;
@@ -164,7 +169,7 @@ Lumi.rect = function (x, y, w, h, config) {
         continue;
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.getMidY() < Lumi.objects[i].getMidY()){
+        if (this.getMidY() < Lumi.objects[i].getMidY()) {
           this.velocity.increase.y = 0;
           this.gravity = 0;
         }
@@ -199,65 +204,129 @@ Lumi.resolveCollision = function (player, entity) {
     console.error("LumiJS: No Collision To Resolve");
     return;
   }
-  var pMidX = player.getMidX();
-  var pMidY = player.getMidY();
-  var aMidX = entity.getMidX();
-  var aMidY = entity.getMidY();
-  var dx = (aMidX - pMidX) / entity.halfWidth;
-  var dy = (aMidY - pMidY) / entity.halfHeight;
-  var absDX = Math.abs(dx);
-  var absDY = Math.abs(dy);
+  if (player.collisionType == "dynamic" && entity.collisionType == "fixed") {
+    var pMidX = player.getMidX();
+    var pMidY = player.getMidY();
+    var aMidX = entity.getMidX();
+    var aMidY = entity.getMidY();
+    var dx = (aMidX - pMidX) / entity.halfWidth;
+    var dy = (aMidY - pMidY) / entity.halfHeight;
+    var absDX = Math.abs(dx);
+    var absDY = Math.abs(dy);
 
-  if (Math.abs(absDX - absDY) < 0.1) {
-    if (dx < 0) {
-      player.x = entity.getRight();
-    } else {
-      player.x = entity.getLeft() - player.width;
-    }
+    if (Math.abs(absDX - absDY) < 0.1) {
+      if (dx < 0) {
+        player.x = entity.getRight();
+      } else {
+        player.x = entity.getLeft() - player.width;
+      }
 
-    if (dy < 0) {
-      player.y = entity.getBottom();
-    } else {
-      player.y = entity.getTop() - player.height;
-    }
+      if (dy < 0) {
+        player.y = entity.getBottom();
+      } else {
+        player.y = entity.getTop() - player.height;
+      }
 
-    if (Math.random() < 0.5) {
+      if (Math.random() < 0.5) {
+        player.velocity.x = -player.velocity.x * entity.restitution;
+
+        if (Math.abs(player.velocity.x) < 0.0004) {
+          player.velocity.x = 0;
+        }
+      } else {
+        player.velocity.y = -player.velocity.y * entity.restitution;
+        if (Math.abs(player.velocity.y) < 0.0004) {
+          player.velocity.y = 0;
+        }
+      }
+
+    } else if (absDX > absDY) {
+      if (dx < 0) {
+        player.x = entity.getRight();
+      } else {
+        player.x = entity.getLeft() - player.width;
+      }
+
       player.velocity.x = -player.velocity.x * entity.restitution;
 
       if (Math.abs(player.velocity.x) < 0.0004) {
         player.velocity.x = 0;
       }
+
     } else {
+      if (dy < 0) {
+        player.y = entity.getBottom();
+      } else {
+        player.velocity.y = 0;
+        player.y = entity.getTop() - player.height;
+      }
+
       player.velocity.y = -player.velocity.y * entity.restitution;
       if (Math.abs(player.velocity.y) < 0.0004) {
         player.velocity.y = 0;
       }
     }
+  } else if (player.type == "dynamic" && entity.type == "dynamic") {
+    var pMidX = player.getMidX();
+    var pMidY = player.getMidY();
+    var aMidX = entity.getMidX();
+    var aMidY = entity.getMidY();
+    var dx = (aMidX - pMidX) / entity.halfWidth;
+    var dy = (aMidY - pMidY) / entity.halfHeight;
+    var absDX = Math.abs(dx);
+    var absDY = Math.abs(dy);
 
-  } else if (absDX > absDY) {
-    if (dx < 0) {
-      player.x = entity.getRight();
+    if (Math.abs(absDX - absDY) < 0.1) {
+      if (dx < 0) {
+        player.x = entity.getRight();
+      } else {
+        player.x = entity.getLeft() - player.width;
+      }
+
+      if (dy < 0) {
+        player.y = entity.getBottom();
+      } else {
+        player.y = entity.getTop() - player.height;
+      }
+
+      if (Math.random() < 0.5) {
+        player.velocity.x = -player.velocity.x * entity.restitution;
+
+        if (Math.abs(player.velocity.x) < 0.0004) {
+          player.velocity.x = 0;
+        }
+      } else {
+        player.velocity.y = -player.velocity.y * entity.restitution;
+        if (Math.abs(player.velocity.y) < 0.0004) {
+          player.velocity.y = 0;
+        }
+      }
+
+    } else if (absDX > absDY) {
+      if (dx < 0) {
+        player.x = entity.getRight();
+      } else {
+        player.x = entity.getLeft() - player.width;
+      }
+
+      player.velocity.x = -player.velocity.x * entity.restitution;
+
+      if (Math.abs(player.velocity.x) < 0.0004) {
+        player.velocity.x = 0;
+      }
+
     } else {
-      player.x = entity.getLeft() - player.width;
-    }
+      if (dy < 0) {
+        player.y = entity.getBottom();
+      } else {
+        player.velocity.y = 0;
+        player.y = entity.getTop() - player.height;
+      }
 
-    player.velocity.x = -player.velocity.x * entity.restitution;
-
-    if (Math.abs(player.velocity.x) < 0.0004) {
-      player.velocity.x = 0;
-    }
-
-  } else {
-    if (dy < 0) {
-      player.y = entity.getBottom();
-    } else {
-      player.velocity.y = 0;
-      player.y = entity.getTop() - player.height;
-    }
-
-    player.velocity.y = -player.velocity.y * entity.restitution;
-    if (Math.abs(player.velocity.y) < 0.0004) {
-      player.velocity.y = 0;
+      player.velocity.y = -player.velocity.y * entity.restitution;
+      if (Math.abs(player.velocity.y) < 0.0004) {
+        player.velocity.y = 0;
+      }
     }
   }
 };
@@ -330,19 +399,21 @@ Lumi.init = function () {
 Lumi.config("fitToWindow", "fitToWindow", 5);
 Lumi.init();
 var square1 = Lumi.addRect(100, 0, 50, 50);
-var square2 = Lumi.addRect(300, 0, 50, 50);
+var square2 = Lumi.addRect(300, 0, 50, 50, {
+  collisionType: "fixed",
+});
 var jump = 0;
 var keyDown = function (e) {
-  if(e.key == "Right" || e.key == "ArrowRight"){
+  if (e.key == "Right" || e.key == "ArrowRight") {
     square1.addXVel(5);
-  } else if (e.key == "Left" || e.key == "ArrowLeft"){
+  } else if (e.key == "Left" || e.key == "ArrowLeft") {
     square1.addXVel(-5);
   }
 }
 var keyUp = function (e) {
-  if(e.key == "Right" || e.key == "ArrowRight"){
+  if (e.key == "Right" || e.key == "ArrowRight") {
     square1.velocity.x = 0;
-  } else if (e.key == "Left" || e.key == "ArrowLeft"){
+  } else if (e.key == "Left" || e.key == "ArrowLeft") {
     square1.velocity.x = 0;
   }
 }
@@ -357,6 +428,7 @@ var getRandomColor = function () {
   }
   return color;
 }
+
 // Code to show Arjun (Delete after)
 
 /*
