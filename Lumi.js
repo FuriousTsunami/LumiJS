@@ -322,13 +322,163 @@ Lumi.ellipse = function (x, y, r, config) {
     }
   };
 };
+Lumi.img = function (img, x, y, width, height, config) {
+  if (!config) {
+    config = {
+      mass: 1,
+      maxVel: {
+        x: 45,
+        y: 45,
+      },
+      restitution: 0,
+      static: false,
+      collision: true,
+      color: "#000000",
+      collisionType: "dynamic",
+    };
+  }
+  if (!config.mass) {
+    config.mass = 1;
+  }
+  if (!config.maxVel) {
+    config.maxVel = {
+      x: 45,
+      y: 45,
+    };
+  }
+  if (!config.maxVel.x) {
+    config.maxVel.x = 45;
+  }
+  if (!config.maxVel.y) {
+    config.maxVel.y = 45;
+  }
+  if (!config.restitution) {
+    config.restitution = 0;
+  }
+  if (!config.static) {
+    config.static = false;
+  }
+  if (!config.collision) {
+    config.collision = true;
+  }
+  if (!config.color) {
+    config.color = "#000000";
+  }
+  if (!config.collisionType) {
+    config.collisionType = "dynamic";
+  }
+  this.type = "img";
+  this.collisionType = config.collisionType;
+  this.img = img;
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
+  this.halfWidth = this.width / 2;
+  this.halfHeight = this.height / 2;
+  this.color = config.color;
+  this.restitution = config.restitution;
+  this.static = config.static;
+  this.collision = config.collision;
+  this.mass = config.mass;
+  this.velocity = {
+    x: 0,
+    y: 0,
+    increase: {
+      x: 0,
+      y: 0,
+    }
+  };
+  this.gravity = Lumi.gravity;
+  this.maxVel = {
+    x: config.maxVel.x,
+    y: config.maxVel.y
+  };
+	/**
+	 * Adds an X Velocity
+	 * @method this.addXVel
+	 * @param {number} The velocity at which to accelerate
+	 * @return {}
+	 */
+  this.addXVel = function (vel) {
+    this.velocity.x += vel;
+  };
+	/**
+	 * Adds a Y Velocity
+	 * @method this.addYVel
+	 * @param {number} The velocity at which to accelerate
+	 * @return {}
+	 */
+  this.addYVel = function (vel) {
+    this.velocity.y += vel;
+  };
+  this.getMidX = function () {
+    return this.halfWidth + this.x;
+  }
+  this.getMidY = function () {
+    return this.halfHeight + this.y;
+  }
+  this.getTop = function () {
+    return this.y;
+  }
+  this.getLeft = function () {
+    return this.x;
+  }
+  this.getRight = function () {
+    return this.x + this.width;
+  }
+  this.getBottom = function () {
+    return this.y + this.height;
+  }
+  this.update = function () {
+    this.halfWidth = this.width * 0.5;
+    this.halfHeight = this.height * 0.5;
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
+    if (this.y <= window.innerHeight - this.height) {
+      this.gravity = Lumi.gravity;
+      if (this.velocity.x >= this.maxVel.x) {
+        this.velocity.x = this.maxVel.x;
+        this.velocity.increase.x = 0;
+      }
+      if (this.velocity.y >= this.maxVel.y) {
+        this.velocity.y = this.maxVel.y;
+        this.velocity.increase.y = 0;
+      } else {
+        if (!this.static) {
+          this.velocity.y = this.gravity * this.mass + this.velocity.increase.y;
+          this.velocity.increase.y += 1;
+        }
+      }
+    } else {
+      this.velocity.increase.y = 0;
+      this.gravity = 0;
+      this.y = window.innerHeight - this.height;
+    }
+    for (var i = 0; i < Lumi.objects.length; i++) {
+      if (this == Lumi.objects[i]) {
+        continue;
+      }
+      if (!this.collision || !Lumi.objects[i].collision) {
+        continue;
+      }
+      if (Lumi.checkCollision(this, Lumi.objects[i])) {
+        if (this.getMidY() < Lumi.objects[i].getMidY()) {
+          this.velocity.increase.y = 0;
+          this.gravity = 0;
+        }
+        Lumi.resolveCollision(this, Lumi.objects[i]);
+      }
+    }
+  };
+};
 /**
  * Adds a rectangle to the canvas
  * @method Lumi.addRect
  * @param {number} x The X-Coordinate of the rectangle.
  * @param {number} y The Y-Coordinate of the rectangle.
- * @param {number} width The Width of the rectangle
- * @param {number} height The Height of the rectangle
+ * @param {number} width The Width of the rectangle.
+ * @param {number} height The Height of the rectangle.
  * @param {object} config (Optional) The settings for this rectangle containing mass, maxVel.x, maxVel.y, restitution (how much velocity and object will retain on impact), collision (if it can be collided with, static (if it is affected by gravity), and color.
  * @return {number} The position of this object in the "objects" array.
  */
@@ -336,10 +486,34 @@ Lumi.addRect = function (x, y, width, height, config) {
   Lumi.objects.push(new Lumi.rect(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
+/**
+ * Adds an ellipse to the canvas
+ * @method Lumi.addEllipse
+ * @param {number} x The X-Coordinate of the ellipse.
+ * @param {number} y The Y-Coordinate of the ellipse.
+ * @param {number} radius The Radius of the ellipse.
+ * @param {object} config (Optional) The settings for this ellipse containing mass, maxVel.x, maxVel.y, restitution (how much velocity and object will retain on impact), collision (if it can be collided with, static (if it is affected by gravity), and color.
+ * @return {number} The position of this object in the "objects" array.
+ */
 Lumi.addEllipse = function (x, y, radius, config) {
   Lumi.objects.push(new Lumi.ellipse(x, y, radius, config));
   return Lumi.objects[Lumi.objects.length - 1];
 }
+/**
+ * Adds an image to the canvas
+ * @method Lumi.addImg
+ * @param {element} img The Image to render.
+ * @param {number} x The X-Coordinate of the image.
+ * @param {number} y The Y-Coordinate of the image.
+ * @param {number} width The Width of the image.
+ * @param {number} height The Height of the image.
+ * @param {object} config (Optional) The settings for this image containing mass, maxVel.x, maxVel.y, restitution (how much velocity and object will retain on impact), collision (if it can be collided with, static (if it is affected by gravity), and color.
+ * @return {number} The position of this object in the "objects" array.
+ */
+Lumi.addImg = function (img, x, y, width, height, config) {
+  Lumi.objects.push(new Lumi.img(img, x, y, width, height, config));
+  return Lumi.objects[Lumi.objects.length - 1];
+};
 /**
  * Resolves an elastic collision between player and obstacle
  * @method Lumi.resolveCollision
@@ -545,6 +719,15 @@ Lumi.renderFrame = function () {
       ctx.fill();
       Lumi.objects[i].update();
       ctx.fillStyle = "#000000";
+    } else if (Lumi.objects[i].type === "img") {
+      ctx.drawImage(
+        Lumi.objects[i].img,
+        Lumi.objects[i].x,
+        Lumi.objects[i].y,
+        Lumi.objects[i].width,
+        Lumi.objects[i].height,
+      );
+      Lumi.objects[i].update();
     }
   }
 };
