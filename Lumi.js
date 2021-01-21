@@ -12,6 +12,7 @@ Lumi.canvasCheck = {
 };
 Lumi.objects = [];
 Lumi.gravity = 0;
+Lumi.cameraType = "side";
 Lumi.random = function (min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -177,6 +178,23 @@ Lumi.rect = function (x, y, w, h, config) {
       }
     }
   };
+  this.updateOver = function () {
+    for (var i = 0; i < Lumi.objects.length; i++) {
+      if (this == Lumi.objects[i]) {
+        continue;
+      }
+      if (!this.collision || !Lumi.objects[i].collision) {
+        continue;
+      }
+      if (Lumi.checkCollision(this, Lumi.objects[i])) {
+        if (this.getMidY() < Lumi.objects[i].getMidY()) {
+          this.velocity.increase.y = 0;
+          this.gravity = 0;
+        }
+        Lumi.resolveCollision(this, Lumi.objects[i]);
+      }
+    }
+  }
 };
 Lumi.ellipse = function (x, y, r, config) {
   if (!config) {
@@ -321,6 +339,23 @@ Lumi.ellipse = function (x, y, r, config) {
       }
     }
   };
+  this.updateOver = function () {
+    for (var i = 0; i < Lumi.objects.length; i++) {
+      if (this == Lumi.objects[i]) {
+        continue;
+      }
+      if (!this.collision || !Lumi.objects[i].collision) {
+        continue;
+      }
+      if (Lumi.checkCollision(this, Lumi.objects[i])) {
+        if (this.getMidY() < Lumi.objects[i].getMidY()) {
+          this.velocity.increase.y = 0;
+          this.gravity = 0;
+        }
+        Lumi.resolveCollision(this, Lumi.objects[i]);
+      }
+    }
+  }
 };
 Lumi.img = function (img, x, y, width, height, config) {
   if (!config) {
@@ -471,6 +506,23 @@ Lumi.img = function (img, x, y, width, height, config) {
       }
     }
   };
+  this.updateOver = function () {
+    for (var i = 0; i < Lumi.objects.length; i++) {
+      if (this == Lumi.objects[i]) {
+        continue;
+      }
+      if (!this.collision || !Lumi.objects[i].collision) {
+        continue;
+      }
+      if (Lumi.checkCollision(this, Lumi.objects[i])) {
+        if (this.getMidY() < Lumi.objects[i].getMidY()) {
+          this.velocity.increase.y = 0;
+          this.gravity = 0;
+        }
+        Lumi.resolveCollision(this, Lumi.objects[i]);
+      }
+    }
+  }
 };
 /**
  * Adds a rectangle to the canvas
@@ -658,9 +710,10 @@ Lumi.resolveCollision = function (player, entity) {
  * @param {number} canvasWidth The canvas width. Can be "fitToWindow"
  * @param {number} canvasHeight The canvas height. Can be "fitToWindow"
  * @param {number} gravity (Optional) The gravity for the Engine.
+ * @param {string} cameraType The camera type for Lumi to render as. Can be "side" or "overhead".
  * @return {}
  */
-Lumi.config = function (canvasWidth, canvasHeight, gravity) {
+Lumi.config = function (canvasWidth, canvasHeight, gravity, cameraType) {
   if (!canvasWidth) {
     canvasWidth = 400;
   }
@@ -678,9 +731,13 @@ Lumi.config = function (canvasWidth, canvasHeight, gravity) {
   if (!gravity) {
     gravity = 0;
   }
+  if (!cameraType) {
+    cameraType = "side";
+  }
   Lumi.canvas.width = canvasWidth;
   Lumi.canvas.height = canvasHeight;
   Lumi.gravity = gravity;
+  Lumi.cameraType = cameraType;
 };
 Lumi.resize = function () {
   if (Lumi.canvasCheck.width == "fitToWindow") {
@@ -703,7 +760,11 @@ Lumi.renderFrame = function () {
         Lumi.objects[i].width,
         Lumi.objects[i].height,
       );
-      Lumi.objects[i].update();
+      if (Lumi.cameraType !== "overhead") {
+        Lumi.objects[i].update();
+      } else {
+        Lumi.objects[i].updateOver();
+      }
       ctx.fillStyle = "#000000";
     } else if (Lumi.objects[i].type === "ellipse") {
       ctx.beginPath();
@@ -717,7 +778,11 @@ Lumi.renderFrame = function () {
       );
       ctx.fillStyle = Lumi.objects[i].color;
       ctx.fill();
-      Lumi.objects[i].update();
+      if (Lumi.cameraType !== "overhead") {
+        Lumi.objects[i].update();
+      } else {
+        Lumi.objects[i].updateOver();
+      }
       ctx.fillStyle = "#000000";
     } else if (Lumi.objects[i].type === "img") {
       ctx.drawImage(
@@ -727,7 +792,11 @@ Lumi.renderFrame = function () {
         Lumi.objects[i].width,
         Lumi.objects[i].height,
       );
-      Lumi.objects[i].update();
+      if (Lumi.cameraType !== "overhead") {
+        Lumi.objects[i].update();
+      } else {
+        Lumi.objects[i].updateOver();
+      }
     }
   }
 };
