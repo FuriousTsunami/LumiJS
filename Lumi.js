@@ -179,6 +179,8 @@ Lumi.rect = function (x, y, w, h, config) {
     }
   };
   this.updateOver = function () {
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this == Lumi.objects[i]) {
         continue;
