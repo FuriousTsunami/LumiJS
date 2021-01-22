@@ -16,7 +16,7 @@ Lumi.random = function (min, max) {
   return Math.random() * (max - min) + min;
 }
 Lumi.checkCollision = function (obj1, obj2) {
-  if (obj1.type == "rect" && obj2.type == "rect") {
+  if (obj1.type !== "ellipse" && obj2.type !== "ellipse") {
     if (
       obj1.x < obj2.x + obj2.width &&
       obj1.x + obj1.width > obj2.x &&
