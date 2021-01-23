@@ -338,10 +338,9 @@ Lumi.resolveCollision = function (obj1, obj2) {
  * @method Lumi.config
  * @param {number} canvasWidth The canvas width. Can be "fitToWindow"
  * @param {number} canvasHeight The canvas height. Can be "fitToWindow"
- * @param {number} gravity (Optional) The gravity for the Engine.
  * @return {}
  */
-Lumi.config = function (canvasWidth, canvasHeight, gravity) {
+Lumi.config = function (canvasWidth, canvasHeight) {
   if (!canvasWidth) {
     canvasWidth = 400;
   }
@@ -356,12 +355,8 @@ Lumi.config = function (canvasWidth, canvasHeight, gravity) {
     canvasHeight = window.innerHeight;
     Lumi.canvasCheck.height = "fitToWindow";
   }
-  if (!gravity) {
-    gravity = 0;
-  }
   Lumi.canvas.width = canvasWidth;
   Lumi.canvas.height = canvasHeight;
-  Lumi.gravity = gravity;
 };
 Lumi.resize = function () {
   if (Lumi.canvasCheck.width == "fitToWindow") {
