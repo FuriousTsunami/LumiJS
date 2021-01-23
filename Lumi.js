@@ -43,7 +43,7 @@ Lumi.rect = function (x, y, w, h, config) {
     config.restitution = 0;
   }
   if (!config.collision) {
-    config.collision =  {
+    config.collision = {
       collide: true,
       affect: true,
     }
@@ -53,7 +53,7 @@ Lumi.rect = function (x, y, w, h, config) {
   }
   if (!config.collision.affect) {
     config.collision.affect = true;
-  } 
+  }
   if (!config.color) {
     config.color = "#000000";
   }
@@ -308,29 +308,29 @@ Lumi.resolveCollision = function (obj1, obj2) {
   if (!Lumi.checkCollision(obj1, obj2)) {
     console.error("LumiJS: Obj1 and Obj2 aren't colliding.");
   }
-  if ("obj1 colliding on the right or left") {
-    if (obj1.velocity.x > 0) {
-      while (Lumi.checkCollision(obj1, obj2)) {
-        obj1.x--;
-      }
-    } 
-    else if (obj1.velocity.x < 0) {
-      while (Lumi.checkCollision(obj1, obj2)) {
-        obj1.x++;
-      }
+  if (obj1.velocity.x > 0) {
+    while (Lumi.checkCollision(obj1, obj2)) {
+      obj1.x--;
     }
-  } 
-  else if ("obj1 colliding on top or bottom") {
-    if (obj1.velocity.y > 0) {
-      while (Lumi.checkCollision(obj1, obj2)) {
-        obj1.y--;
-      }
+    obj1.addXVel(-1 * (obj1.velocity.x * obj2.restitution));
+  }
+  else if (obj1.velocity.x < 0) {
+    while (Lumi.checkCollision(obj1, obj2)) {
+      obj1.x++;
     }
-    else if (obj1.velocity.y < 0) {
-      while (Lumi.checkCollision(obj1, obj2)) {
-        obj1.y++;
-      }
+    obj1.addXVel(obj1.velocity.x * obj2.restitution);
+  }
+  if (obj1.velocity.y > 0) {
+    while (Lumi.checkCollision(obj1, obj2)) {
+      obj1.y--;
     }
+    obj1.addYVel(-1 * (obj1.velocity.y * obj2.restitution));
+  }
+  else if (obj1.velocity.y < 0) {
+    while (Lumi.checkCollision(obj1, obj2)) {
+      obj1.y++;
+    }
+    obj1.addYVel(obj1.velocity.y * obj2.restitution);
   }
 };
 /**
@@ -384,11 +384,11 @@ Lumi.renderFrame = function () {
     } else if (Lumi.objects[i].type === "ellipse") {
       ctx.beginPath();
       ctx.arc(
-        Lumi.objects[i].x, 
+        Lumi.objects[i].x,
         Lumi.objects[i].y,
-        Lumi.objects[i].radius, 
-        0, 
-        2 * Math.PI, 
+        Lumi.objects[i].radius,
+        0,
+        2 * Math.PI,
         false,
       );
       ctx.fillStyle = Lumi.objects[i].color;
