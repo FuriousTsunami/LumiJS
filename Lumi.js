@@ -11,7 +11,6 @@ Lumi.canvasCheck = {
   height: "normal"
 };
 Lumi.objects = [];
-Lumi.gravity = 0;
 Lumi.random = function (min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -32,74 +31,45 @@ Lumi.checkCollision = function (obj1, obj2) {
 Lumi.rect = function (x, y, w, h, config) {
   if (!config) {
     config = {
-      mass: 1,
-      maxVel: {
-        x: 45,
-        y: 45,
-      },
       restitution: 0,
-      static: false,
-      collision: true,
+      collision: {
+        collide: true,
+        affect: true,
+      },
       color: "#000000",
-      collisionType: "dynamic",
     };
-  }
-  if (!config.mass) {
-    config.mass = 1;
-  }
-  if (!config.maxVel) {
-    config.maxVel = {
-      x: 45,
-      y: 45,
-    };
-  }
-  if (!config.maxVel.x) {
-    config.maxVel.x = 45;
-  }
-  if (!config.maxVel.y) {
-    config.maxVel.y = 45;
   }
   if (!config.restitution) {
     config.restitution = 0;
   }
-  if (!config.static) {
-    config.static = false;
-  }
   if (!config.collision) {
-    config.collision = true;
+    config.collision =  {
+      collide: true,
+      affect: true,
+    }
   }
+  if (!config.collision.collide) {
+    config.collision.collide = true;
+  }
+  if (!config.collision.affect) {
+    config.collision.affect = true;
+  } 
   if (!config.color) {
     config.color = "#000000";
   }
-  if (!config.collisionType) {
-    config.collisionType = "dynamic";
-  }
   this.type = "rect";
-  this.collisionType = config.collisionType;
   this.x = x;
   this.y = y;
   this.width = w;
   this.height = h;
-  this.halfWidth = this.width / 2;
-  this.halfHeight = this.height / 2;
   this.color = config.color;
   this.restitution = config.restitution;
-  this.static = config.static;
   this.collision = config.collision;
-  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
-    increase: {
-      x: 0,
-      y: 0,
-    }
   };
-  this.gravity = Lumi.gravity;
-  this.maxVel = {
-    x: config.maxVel.x,
-    y: config.maxVel.y
-  };
+
 	/**
 	 * Adds an X Velocity
 	 * @method this.addXVel
@@ -118,62 +88,20 @@ Lumi.rect = function (x, y, w, h, config) {
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
-  this.getMidX = function () {
-    return this.halfWidth + this.x;
-  }
-  this.getMidY = function () {
-    return this.halfHeight + this.y;
-  }
-  this.getTop = function () {
-    return this.y;
-  }
-  this.getLeft = function () {
-    return this.x;
-  }
-  this.getRight = function () {
-    return this.x + this.width;
-  }
-  this.getBottom = function () {
-    return this.y + this.height;
-  }
   this.update = function () {
-    this.halfWidth = this.width * 0.5;
-    this.halfHeight = this.height * 0.5;
     this.x += this.velocity.x;
     this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.height) {
-      this.gravity = Lumi.gravity;
-      if (this.velocity.x >= this.maxVel.x) {
-        this.velocity.x = this.maxVel.x;
-        this.velocity.increase.x = 0;
-      }
-      if (this.velocity.y >= this.maxVel.y) {
-        this.velocity.y = this.maxVel.y;
-        this.velocity.increase.y = 0;
-      } else {
-        if (!this.static) {
-          this.velocity.y = this.gravity * this.mass + this.velocity.increase.y;
-          this.velocity.increase.y += 1;
-        }
-      }
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-      this.y = window.innerHeight - this.height;
-    }
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this == Lumi.objects[i]) {
         continue;
       }
-      if (!this.collision || !Lumi.objects[i].collision) {
+      if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
         continue;
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.getMidY() < Lumi.objects[i].getMidY()) {
-          this.velocity.increase.y = 0;
-          this.gravity = 0;
+        if (this.collision.affect) {
+          Lumi.resolveCollision(this, Lumi.objects[i]);
         }
-        Lumi.resolveCollision(this, Lumi.objects[i]);
       }
     }
   };
@@ -181,70 +109,42 @@ Lumi.rect = function (x, y, w, h, config) {
 Lumi.ellipse = function (x, y, r, config) {
   if (!config) {
     config = {
-      mass: 1,
-      maxVel: {
-        x: 45,
-        y: 45,
-      },
       restitution: 0,
-      static: false,
-      collision: true,
+      collision: {
+        collide: true,
+        affect: true,
+      },
       color: "#000000",
-      collisionType: "dynamic",
     };
-  }
-  if (!config.mass) {
-    config.mass = 1;
-  }
-  if (!config.maxVel) {
-    config.maxVel = {
-      x: 45,
-      y: 45,
-    };
-  }
-  if (!config.maxVel.x) {
-    config.maxVel.x = 45;
-  }
-  if (!config.maxVel.y) {
-    config.maxVel.y = 45;
   }
   if (!config.restitution) {
     config.restitution = 0;
   }
-  if (!config.static) {
-    config.static = false;
-  }
   if (!config.collision) {
-    config.collision = true;
+    config.collision = {
+      collide: true,
+      affect: true,
+    }
+  }
+  if (!config.collision.collide) {
+    config.collision.collide = true;
+  }
+  if (!config.collision.affect) {
+    config.collison.affect = true;
   }
   if (!config.color) {
     config.color = "#000000";
   }
-  if (!config.collisionType) {
-    config.collisionType = "dynamic";
-  }
   this.type = "ellipse";
-  this.collisionType = config.collisionType;
   this.x = x;
   this.y = y;
   this.radius = r;
   this.color = config.color;
   this.restitution = config.restitution;
-  this.static = config.static;
   this.collision = config.collision;
-  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
-    increase: {
-      x: 0,
-      y: 0,
-    }
-  };
-  this.gravity = Lumi.gravity;
-  this.maxVel = {
-    x: config.maxVel.x,
-    y: config.maxVel.y
   };
 	/**
 	 * Adds an X Velocity
@@ -264,60 +164,20 @@ Lumi.ellipse = function (x, y, r, config) {
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
-  this.getMidX = function () {
-    return this.x;
-  }
-  this.getMidY = function () {
-    return this.y;
-  }
-  this.getTop = function () {
-    return this.y - this.radius;
-  }
-  this.getLeft = function () {
-    return this.x - this.radius;
-  }
-  this.getRight = function () {
-    return this.x + this.radius;
-  }
-  this.getBottom = function () {
-    return this.y + this.radius;
-  }
   this.update = function () {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.radius) {
-      this.gravity = Lumi.gravity;
-      if (this.velocity.x >= this.maxVel.x) {
-        this.velocity.x = this.maxVel.x;
-        this.velocity.increase.x = 0;
-      }
-      if (this.velocity.y >= this.maxVel.y) {
-        this.velocity.y = this.maxVel.y;
-        this.velocity.increase.y = 0;
-      } else {
-        if (!this.static) {
-          this.velocity.y = this.gravity * this.mass + this.velocity.increase.y;
-          this.velocity.increase.y += 1;
-        }
-      }
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-      this.y = window.innerHeight - this.radius;
-    }
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this == Lumi.objects[i]) {
         continue;
       }
-      if (!this.collision || !Lumi.objects[i].collision) {
+      if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
         continue;
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.getMidY() < Lumi.objects[i].getMidY()) {
-          this.velocity.increase.y = 0;
-          this.gravity = 0;
+        if (this.collision.affect) {
+          Lumi.resolveCollision(this, Lumi.objects[i]);
         }
-        Lumi.resolveCollision(this, Lumi.objects[i]);
       }
     }
   };
@@ -325,74 +185,39 @@ Lumi.ellipse = function (x, y, r, config) {
 Lumi.img = function (img, x, y, width, height, config) {
   if (!config) {
     config = {
-      mass: 1,
-      maxVel: {
-        x: 45,
-        y: 45,
-      },
       restitution: 0,
-      static: false,
-      collision: true,
-      color: "#000000",
-      collisionType: "dynamic",
+      collision: {
+        collide: true,
+        affect: true,
+      },
     };
-  }
-  if (!config.mass) {
-    config.mass = 1;
-  }
-  if (!config.maxVel) {
-    config.maxVel = {
-      x: 45,
-      y: 45,
-    };
-  }
-  if (!config.maxVel.x) {
-    config.maxVel.x = 45;
-  }
-  if (!config.maxVel.y) {
-    config.maxVel.y = 45;
   }
   if (!config.restitution) {
     config.restitution = 0;
   }
-  if (!config.static) {
-    config.static = false;
-  }
   if (!config.collision) {
-    config.collision = true;
+    config.collision = {
+      collide: true,
+      affect: true,
+    }
   }
-  if (!config.color) {
-    config.color = "#000000";
+  if (!config.collision.collide) {
+    config.collision.collide = true;
   }
-  if (!config.collisionType) {
-    config.collisionType = "dynamic";
+  if (!config.collision.affect) {
+    config.collision.affect = true;
   }
   this.type = "img";
-  this.collisionType = config.collisionType;
   this.img = img;
   this.x = x;
   this.y = y;
   this.width = width;
   this.height = height;
-  this.halfWidth = this.width / 2;
-  this.halfHeight = this.height / 2;
-  this.color = config.color;
   this.restitution = config.restitution;
-  this.static = config.static;
   this.collision = config.collision;
-  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
-    increase: {
-      x: 0,
-      y: 0,
-    }
-  };
-  this.gravity = Lumi.gravity;
-  this.maxVel = {
-    x: config.maxVel.x,
-    y: config.maxVel.y
   };
 	/**
 	 * Adds an X Velocity
@@ -412,62 +237,20 @@ Lumi.img = function (img, x, y, width, height, config) {
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
-  this.getMidX = function () {
-    return this.halfWidth + this.x;
-  }
-  this.getMidY = function () {
-    return this.halfHeight + this.y;
-  }
-  this.getTop = function () {
-    return this.y;
-  }
-  this.getLeft = function () {
-    return this.x;
-  }
-  this.getRight = function () {
-    return this.x + this.width;
-  }
-  this.getBottom = function () {
-    return this.y + this.height;
-  }
   this.update = function () {
-    this.halfWidth = this.width * 0.5;
-    this.halfHeight = this.height * 0.5;
     this.x += this.velocity.x;
     this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.height) {
-      this.gravity = Lumi.gravity;
-      if (this.velocity.x >= this.maxVel.x) {
-        this.velocity.x = this.maxVel.x;
-        this.velocity.increase.x = 0;
-      }
-      if (this.velocity.y >= this.maxVel.y) {
-        this.velocity.y = this.maxVel.y;
-        this.velocity.increase.y = 0;
-      } else {
-        if (!this.static) {
-          this.velocity.y = this.gravity * this.mass + this.velocity.increase.y;
-          this.velocity.increase.y += 1;
-        }
-      }
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-      this.y = window.innerHeight - this.height;
-    }
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this == Lumi.objects[i]) {
         continue;
       }
-      if (!this.collision || !Lumi.objects[i].collision) {
+      if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
         continue;
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.getMidY() < Lumi.objects[i].getMidY()) {
-          this.velocity.increase.y = 0;
-          this.gravity = 0;
+        if (this.collision.affect) {
+          Lumi.resolveCollision(this, Lumi.objects[i]);
         }
-        Lumi.resolveCollision(this, Lumi.objects[i]);
       }
     }
   };
@@ -521,133 +304,31 @@ Lumi.addImg = function (img, x, y, width, height, config) {
  * @param {object} entity The Obstacle
  * @return {}
  */
-Lumi.resolveCollision = function (player, entity) {
-  if (!Lumi.checkCollision(player, entity)) {
-    console.error("LumiJS: No Collision To Resolve");
-    return;
+Lumi.resolveCollision = function (obj1, obj2) {
+  if (!Lumi.checkCollision(obj1, obj2)) {
+    console.error("LumiJS: Obj1 and Obj2 aren't colliding.");
   }
-  if (player.collisionType == "dynamic" && entity.collisionType == "fixed") {
-    var pMidX = player.getMidX();
-    var pMidY = player.getMidY();
-    var aMidX = entity.getMidX();
-    var aMidY = entity.getMidY();
-    var dx = (aMidX - pMidX) / entity.halfWidth;
-    var dy = (aMidY - pMidY) / entity.halfHeight;
-    var absDX = Math.abs(dx);
-    var absDY = Math.abs(dy);
-
-    if (Math.abs(absDX - absDY) < 0.1) {
-      if (dx < 0) {
-        player.x = entity.getRight();
-      } else {
-        player.x = entity.getLeft() - player.width;
+  if ("obj1 colliding on the right or left") {
+    if (obj1.velocity.x > 0) {
+      while (Lumi.checkCollision(obj1, obj2)) {
+        obj1.x--;
       }
-
-      if (dy < 0) {
-        player.y = entity.getBottom();
-      } else {
-        player.y = entity.getTop() - player.height;
-      }
-
-      if (Math.random() < 0.5) {
-        player.velocity.x = -player.velocity.x * entity.restitution;
-
-        if (Math.abs(player.velocity.x) < 0.0004) {
-          player.velocity.x = 0;
-        }
-      } else {
-        player.velocity.y = -player.velocity.y * entity.restitution;
-        if (Math.abs(player.velocity.y) < 0.0004) {
-          player.velocity.y = 0;
-        }
-      }
-
-    } else if (absDX > absDY) {
-      if (dx < 0) {
-        player.x = entity.getRight();
-      } else {
-        player.x = entity.getLeft() - player.width;
-      }
-
-      player.velocity.x = -player.velocity.x * entity.restitution;
-
-      if (Math.abs(player.velocity.x) < 0.0004) {
-        player.velocity.x = 0;
-      }
-
-    } else {
-      if (dy < 0) {
-        player.y = entity.getBottom();
-      } else {
-        player.velocity.y = 0;
-        player.y = entity.getTop() - player.height;
-      }
-
-      player.velocity.y = -player.velocity.y * entity.restitution;
-      if (Math.abs(player.velocity.y) < 0.0004) {
-        player.velocity.y = 0;
+    } 
+    else if (obj1.velocity.x < 0) {
+      while (Lumi.checkCollision(obj1, obj2)) {
+        obj1.x++;
       }
     }
-  } else if (player.type == "dynamic" && entity.type == "dynamic") {
-    var pMidX = player.getMidX();
-    var pMidY = player.getMidY();
-    var aMidX = entity.getMidX();
-    var aMidY = entity.getMidY();
-    var dx = (aMidX - pMidX) / entity.halfWidth;
-    var dy = (aMidY - pMidY) / entity.halfHeight;
-    var absDX = Math.abs(dx);
-    var absDY = Math.abs(dy);
-
-    if (Math.abs(absDX - absDY) < 0.1) {
-      if (dx < 0) {
-        player.x = entity.getRight();
-      } else {
-        player.x = entity.getLeft() - player.width;
+  } 
+  else if ("obj1 colliding on top or bottom") {
+    if (obj1.velocity.y > 0) {
+      while (Lumi.checkCollision(obj1, obj2)) {
+        obj1.y--;
       }
-
-      if (dy < 0) {
-        player.y = entity.getBottom();
-      } else {
-        player.y = entity.getTop() - player.height;
-      }
-
-      if (Math.random() < 0.5) {
-        player.velocity.x = -player.velocity.x * entity.restitution;
-
-        if (Math.abs(player.velocity.x) < 0.0004) {
-          player.velocity.x = 0;
-        }
-      } else {
-        player.velocity.y = -player.velocity.y * entity.restitution;
-        if (Math.abs(player.velocity.y) < 0.0004) {
-          player.velocity.y = 0;
-        }
-      }
-
-    } else if (absDX > absDY) {
-      if (dx < 0) {
-        player.x = entity.getRight();
-      } else {
-        player.x = entity.getLeft() - player.width;
-      }
-
-      player.velocity.x = -player.velocity.x * entity.restitution;
-
-      if (Math.abs(player.velocity.x) < 0.0004) {
-        player.velocity.x = 0;
-      }
-
-    } else {
-      if (dy < 0) {
-        player.y = entity.getBottom();
-      } else {
-        player.velocity.y = 0;
-        player.y = entity.getTop() - player.height;
-      }
-
-      player.velocity.y = -player.velocity.y * entity.restitution;
-      if (Math.abs(player.velocity.y) < 0.0004) {
-        player.velocity.y = 0;
+    }
+    else if (obj1.velocity.y < 0) {
+      while (Lumi.checkCollision(obj1, obj2)) {
+        obj1.y++;
       }
     }
   }
