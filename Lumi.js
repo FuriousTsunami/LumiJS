@@ -12,12 +12,12 @@ Lumi.canvasCheck = {
 };
 Lumi.objects = [];
 /**
-	Checks if two objects are colliding
+	* Checks if two objects are colliding
 	* @method Lumi.checkCollision
 	* @param {object} The first collision object
   * @param {object} The second collision object
 	* @return {}
-*/
+ */
 Lumi.checkCollision = function (obj1, obj2) {
   if (obj1.type == "rect" && obj2.type == "rect") {
     if (obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x && obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y) {
@@ -107,20 +107,20 @@ Lumi.rect = function (x, y, w, h, config) {
   };
 
 	/**
-	 Adds an X Velocity
+	 * Adds an X Velocity
 	 * @method this.addXVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addXVel = function (vel) {
     this.velocity.x += vel;
   };
 	/**
-	 Adds a Y Velocity
+	 * Adds a Y Velocity
 	 * @method this.addYVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
@@ -184,20 +184,20 @@ Lumi.ellipse = function (x, y, r, config) {
     y: 0,
   };
 	/**
-	 Adds an X Velocity
+	 * Adds an X Velocity
 	 * @method this.addXVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addXVel = function (vel) {
     this.velocity.x += vel;
   };
 	/**
-	Adds a Y Velocity
+	 * Adds a Y Velocity
 	 * @method this.addYVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
@@ -258,20 +258,20 @@ Lumi.img = function (img, x, y, width, height, config) {
     y: 0,
   };
 	/**
-	 Adds an X Velocity
+	 * Adds an X Velocity
 	 * @method this.addXVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addXVel = function (vel) {
     this.velocity.x += vel;
   };
 	/**
-	 Adds a Y Velocity
+	 * Adds a Y Velocity
 	 * @method this.addYVel
 	 * @param {number} The velocity at which to accelerate
 	 * @return {}
-	*/
+	 */
   this.addYVel = function (vel) {
     this.velocity.y += vel;
   };
@@ -294,7 +294,7 @@ Lumi.img = function (img, x, y, width, height, config) {
   };
 };
 /**
- Adds a rectangle to the canvas
+ * Adds a rectangle to the canvas
  * @method Lumi.addRect
  * @param {number} x The X-Coordinate of the rectangle.
  * @param {number} y The Y-Coordinate of the rectangle.
@@ -302,26 +302,26 @@ Lumi.img = function (img, x, y, width, height, config) {
  * @param {number} height The Height of the rectangle.
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
  * @return {number} The position of this object in the "objects" array.
-*/
+ */
 Lumi.addRect = function (x, y, width, height, config) {
   Lumi.objects.push(new Lumi.rect(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
 /**
- Adds an ellipse to the canvas
+ * Adds an ellipse to the canvas
  * @method Lumi.addEllipse
  * @param {number} x The X-Coordinate of the ellipse.
  * @param {number} y The Y-Coordinate of the ellipse.
  * @param {number} radius The Radius of the ellipse.
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
  * @return {number} The position of this object in the "objects" array.
-*/
+ */
 Lumi.addEllipse = function (x, y, radius, config) {
   Lumi.objects.push(new Lumi.ellipse(x, y, radius, config));
   return Lumi.objects[Lumi.objects.length - 1];
 }
 /**
- Adds an image to the canvas
+ * Adds an image to the canvas
  * @method Lumi.addImg
  * @param {element} img The Image to render.
  * @param {number} x The X-Coordinate of the image.
@@ -330,18 +330,18 @@ Lumi.addEllipse = function (x, y, radius, config) {
  * @param {number} height The Height of the image.
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
  * @return {number} The position of this object in the "objects" array.
-*/
+ */
 Lumi.addImg = function (img, x, y, width, height, config) {
   Lumi.objects.push(new Lumi.img(img, x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
 /**
- Resolves an elastic collision between player and obstacle
+ * Resolves an elastic collision between player and obstacle
  * @method Lumi.resolveCollision
  * @param {object} player The first object that has collided
  * @param {object} entity The second object that has collided
  * @return {}
-*/
+ */
 Lumi.resolveCollision = function (obj1, obj2) {
   if (!Lumi.checkCollision(obj1, obj2)) {
     console.error("LumiJS: Obj1 and Obj2 aren't colliding.");
@@ -372,12 +372,12 @@ Lumi.resolveCollision = function (obj1, obj2) {
   }
 };
 /**
- Configures variables to run the Engine and Renderer.
+ * Configures variables to run the Engine and Renderer.
  * @method Lumi.config
  * @param {number} canvasWidth The canvas width. Can be "fitToWindow"
  * @param {number} canvasHeight The canvas height. Can be "fitToWindow"
  * @return {}
-*/
+ */
 Lumi.config = function (canvasWidth, canvasHeight) {
   if (!canvasWidth) {
     canvasWidth = 400;
@@ -447,10 +447,10 @@ Lumi.renderFrame = function () {
 };
 
 /**
- Starts engine and renderer
+ * Starts engine and renderer
  * @method Lumi.init
  * @return {}
-*/
+ */
 Lumi.init = function () {
   requestAnimationFrame(Lumi.init);
 };
