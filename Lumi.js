@@ -14,8 +14,8 @@ Lumi.objects = [];
 /**
 	* Checks if two objects are colliding
 	* @method Lumi.checkCollision
-	* @param {object} The first collision object
-  * @param {object} The second collision object
+	* @param {object} obj1 The first collision object
+  * @param {object} obj2 The second collision object
 	* @return {}
  */
 Lumi.checkCollision = function (obj1, obj2) {
@@ -109,7 +109,7 @@ Lumi.rect = function (x, y, w, h, config) {
 	/**
 	 * Adds an X Velocity
 	 * @method this.addXVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addXVel = function (vel) {
@@ -118,7 +118,7 @@ Lumi.rect = function (x, y, w, h, config) {
 	/**
 	 * Adds a Y Velocity
 	 * @method this.addYVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addYVel = function (vel) {
@@ -186,7 +186,7 @@ Lumi.ellipse = function (x, y, r, config) {
 	/**
 	 * Adds an X Velocity
 	 * @method this.addXVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addXVel = function (vel) {
@@ -195,7 +195,7 @@ Lumi.ellipse = function (x, y, r, config) {
 	/**
 	 * Adds a Y Velocity
 	 * @method this.addYVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addYVel = function (vel) {
@@ -260,7 +260,7 @@ Lumi.img = function (img, x, y, width, height, config) {
 	/**
 	 * Adds an X Velocity
 	 * @method this.addXVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addXVel = function (vel) {
@@ -269,7 +269,7 @@ Lumi.img = function (img, x, y, width, height, config) {
 	/**
 	 * Adds a Y Velocity
 	 * @method this.addYVel
-	 * @param {number} The velocity at which to accelerate
+	 * @param {number} vel The velocity at which to accelerate
 	 * @return {}
 	 */
   this.addYVel = function (vel) {
@@ -338,8 +338,8 @@ Lumi.addImg = function (img, x, y, width, height, config) {
 /**
  * Resolves an elastic collision between player and obstacle
  * @method Lumi.resolveCollision
- * @param {object} player The first object that has collided
- * @param {object} entity The second object that has collided
+ * @param {object} obj1 The first object that has collided
+ * @param {object} obj2 The second object that has collided
  * @return {}
  */
 Lumi.resolveCollision = function (obj1, obj2) {
