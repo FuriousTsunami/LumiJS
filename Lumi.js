@@ -500,9 +500,3 @@ Lumi.init = function () {
   requestAnimationFrame(Lumi.init);
   Lumi.renderFrame();
 };
-Lumi.config("fitToWindow", "fitToWindow", 5, {
-  follow: "none",
-  type: "side",
-});
-Lumi.init();
-var sqr1 = Lumi.addRect(10, 10, 50, 50);
