@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "doxdox": "3.0.0"
-  },
-  "scripts": {
-    "docs": "doxdox '/Lumi.js' --layout html --output DOCUMENTATION.html"
-  }
-}

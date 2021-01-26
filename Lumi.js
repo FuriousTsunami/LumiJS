@@ -453,4 +453,5 @@ Lumi.renderFrame = function () {
  */
 Lumi.init = function () {
   requestAnimationFrame(Lumi.init);
+  Lumi.renderFrame();
 };
