@@ -180,6 +180,7 @@ Lumi.ellipse = function (x, y, r, config) {
         collide: true,
         affect: true,
       },
+      mass: 1,
       color: "#000000",
     };
   }
@@ -212,9 +213,15 @@ Lumi.ellipse = function (x, y, r, config) {
   this.color = config.color;
   this.restitution = config.restitution;
   this.collision = config.collision;
+  this.gravity = 0;
+  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
+    increase: {
+      x: 0,
+      y: 0,
+    }
   };
 	/**
 	 * Adds an X Velocity
@@ -237,6 +244,16 @@ Lumi.ellipse = function (x, y, r, config) {
   this.update = function () {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
+    if (this.y <= window.innerHeight - this.radius) {
+      this.gravity = Lumi.gravity;
+    } else {
+      this.velocity.increase.y = 0;
+      this.gravity = 0;
+    }
+    if (Lumi.camera.type === "side") {
+      this.y += this.gravity * this.mass + this.velocity.increase.y;
+      this.velocity.increase.y ++;
+    }
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this === Lumi.objects[i]) {
         continue;
@@ -252,7 +269,7 @@ Lumi.ellipse = function (x, y, r, config) {
     }
   };
 };
-Lumi.img = function (img, x, y, width, height, config) {
+Lumi.img = function (img, x, y, w, h, config) {
   if (!config) {
     config = {
       restitution: 0,
@@ -260,6 +277,8 @@ Lumi.img = function (img, x, y, width, height, config) {
         collide: true,
         affect: true,
       },
+      mass: 1,
+      color: "#000000",
     };
   }
   if (!config.restitution) {
@@ -277,19 +296,33 @@ Lumi.img = function (img, x, y, width, height, config) {
   if (!config.collision.affect) {
     config.collision.affect = true;
   }
+  if (!config.mass) {
+    config.mass = 1;
+  }
+  if (!config.color) {
+    config.color = "#000000";
+  }
   this.type = "rect";
   this.render = "img";
   this.img = img;
   this.x = x;
   this.y = y;
-  this.width = width;
-  this.height = height;
+  this.width = w;
+  this.height = h;
+  this.color = config.color;
   this.restitution = config.restitution;
   this.collision = config.collision;
+  this.gravity = 0;
+  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
+    increase: {
+      x: 0,
+      y: 0,
+    }
   };
+
 	/**
 	 * Adds an X Velocity
 	 * @method this.addXVel
@@ -311,6 +344,16 @@ Lumi.img = function (img, x, y, width, height, config) {
   this.update = function () {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
+    if (this.y <= window.innerHeight - this.height) {
+      this.gravity = Lumi.gravity;
+    } else {
+      this.velocity.increase.y = 0;
+      this.gravity = 0;
+    }
+    if (Lumi.camera.type === "side") {
+      this.y += this.gravity * this.mass + this.velocity.increase.y;
+      this.velocity.increase.y ++;
+    }
     for (var i = 0; i < Lumi.objects.length; i++) {
       if (this === Lumi.objects[i]) {
         continue;
@@ -320,6 +363,9 @@ Lumi.img = function (img, x, y, width, height, config) {
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
         if (this.collision.affect) {
+          if (this.y < Lumi.objects[i].y + this.height) {
+            this.velocity.increase.y = 0;
+          }
           Lumi.resolveCollision(this, Lumi.objects[i]);
         }
       }
@@ -333,7 +379,7 @@ Lumi.img = function (img, x, y, width, height, config) {
  * @param {number} y The Y-Coordinate of the rectangle.
  * @param {number} width The Width of the rectangle.
  * @param {number} height The Height of the rectangle.
- * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
+ * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
 Lumi.addRect = function (x, y, width, height, config) {
@@ -346,7 +392,7 @@ Lumi.addRect = function (x, y, width, height, config) {
  * @param {number} x The X-Coordinate of the ellipse.
  * @param {number} y The Y-Coordinate of the ellipse.
  * @param {number} radius The Radius of the ellipse.
- * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
+ * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
 Lumi.addEllipse = function (x, y, radius, config) {
@@ -361,7 +407,7 @@ Lumi.addEllipse = function (x, y, radius, config) {
  * @param {number} y The Y-Coordinate of the image.
  * @param {number} width The Width of the image.
  * @param {number} height The Height of the image.
- * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), and color.
+ * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
 Lumi.addImg = function (img, x, y, width, height, config) {
@@ -490,7 +536,6 @@ Lumi.renderFrame = function () {
     }
   }
 };
-
 /**
  * Starts engine and renderer
  * @method Lumi.init
