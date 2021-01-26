@@ -3,6 +3,8 @@ var Lumi = function () {
 };
 Lumi.canvas = document.createElement("CANVAS");
 Lumi.canvas.id = "canvas";
+Lumi.canvas.width = 400;
+Lumi.canvas.height = 400;
 document.body.appendChild(Lumi.canvas);
 const ctx = Lumi.canvas.getContext("2d");
 document.body.style.overflow = "hidden";
@@ -10,6 +12,11 @@ Lumi.canvasCheck = {
   width: "normal",
   height: "normal"
 };
+Lumi.camera = {
+  follow: "none",
+  type: "top",
+};
+Lumi.gravity = 0;
 Lumi.objects = [];
 /**
 	* Checks if two objects are colliding
@@ -19,11 +26,11 @@ Lumi.objects = [];
 	* @return {}
  */
 Lumi.checkCollision = function (obj1, obj2) {
-  if (obj1.type == "rect" && obj2.type == "rect") {
+  if (obj1.type === "rect" && obj2.type === "rect") {
     if (obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x && obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y) {
       return true;
     }
-  } else if (obj1.type == "rect" && obj2.type == "ellipse") {
+  } else if (obj1.type === "rect" && obj2.type === "ellipse") {
     var distX = Math.abs(obj2.x - obj1.x - obj1.width / 2);
     var distY = Math.abs(obj2.y - obj1.y - obj1.height / 2);
 
@@ -36,7 +43,7 @@ Lumi.checkCollision = function (obj1, obj2) {
     var dx = distX - obj1.width / 2;
     var dy = distY - obj1.height / 2;
     return (dx * dx + dy * dy <= (obj2.radius * obj2.radius));
-  } else if (obj1.type == "ellipse" && obj2.type == "ellipse") {
+  } else if (obj1.type === "ellipse" && obj2.type === "ellipse") {
     var dx = obj1.x - obj2.x;
     var dy = obj1.y - obj2.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
@@ -46,7 +53,7 @@ Lumi.checkCollision = function (obj1, obj2) {
     } else {
       return false;
     }
-  } else if (obj1.type == "ellipse" && obj2.type == "rect") {
+  } else if (obj1.type === "ellipse" && obj2.type === "rect") {
     var distX = Math.abs(obj1.x - obj2.x - obj2.width / 2);
     var distY = Math.abs(obj1.y - obj2.y - obj2.height / 2);
 
@@ -71,6 +78,7 @@ Lumi.rect = function (x, y, w, h, config) {
         collide: true,
         affect: true,
       },
+      mass: 1,
       color: "#000000",
     };
   }
@@ -89,6 +97,9 @@ Lumi.rect = function (x, y, w, h, config) {
   if (!config.collision.affect) {
     config.collision.affect = true;
   }
+  if (!config.mass) {
+    config.mass = 1;
+  }
   if (!config.color) {
     config.color = "#000000";
   }
@@ -101,9 +112,15 @@ Lumi.rect = function (x, y, w, h, config) {
   this.color = config.color;
   this.restitution = config.restitution;
   this.collision = config.collision;
+  this.gravity = 0;
+  this.mass = config.mass;
   this.velocity = {
     x: 0,
     y: 0,
+    increase: {
+      x: 0,
+      y: 0,
+    }
   };
 
 	/**
@@ -127,8 +144,18 @@ Lumi.rect = function (x, y, w, h, config) {
   this.update = function () {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
+    if (this.y <= window.innerHeight - this.height) {
+      this.gravity = Lumi.gravity;
+    } else {
+      this.velocity.increase.y = 0;
+      this.gravity = 0;
+    }
+    if (Lumi.camera.type === "side") {
+      this.y += this.gravity * this.mass + this.velocity.increase.y;
+      this.velocity.increase.y ++;
+    }
     for (var i = 0; i < Lumi.objects.length; i++) {
-      if (this == Lumi.objects[i]) {
+      if (this === Lumi.objects[i]) {
         continue;
       }
       if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
@@ -136,6 +163,9 @@ Lumi.rect = function (x, y, w, h, config) {
       }
       if (Lumi.checkCollision(this, Lumi.objects[i])) {
         if (this.collision.affect) {
+          if (this.y < Lumi.objects[i].y + this.height) {
+            this.velocity.increase.y = 0;
+          }
           Lumi.resolveCollision(this, Lumi.objects[i]);
         }
       }
@@ -167,6 +197,9 @@ Lumi.ellipse = function (x, y, r, config) {
   }
   if (!config.collision.affect) {
     config.collison.affect = true;
+  }
+  if (!config.mass) {
+    config.mass = 1;
   }
   if (!config.color) {
     config.color = "#000000";
@@ -205,7 +238,7 @@ Lumi.ellipse = function (x, y, r, config) {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
     for (var i = 0; i < Lumi.objects.length; i++) {
-      if (this == Lumi.objects[i]) {
+      if (this === Lumi.objects[i]) {
         continue;
       }
       if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
@@ -279,7 +312,7 @@ Lumi.img = function (img, x, y, width, height, config) {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
     for (var i = 0; i < Lumi.objects.length; i++) {
-      if (this == Lumi.objects[i]) {
+      if (this === Lumi.objects[i]) {
         continue;
       }
       if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
@@ -376,31 +409,43 @@ Lumi.resolveCollision = function (obj1, obj2) {
  * @method Lumi.config
  * @param {number} canvasWidth The canvas width. Can be "fitToWindow"
  * @param {number} canvasHeight The canvas height. Can be "fitToWindow"
+ * @param {object} camera An object for the camera settings, including "follow" which indicates which object it should follow, and "type", which indicates if the view should be from the top, or from the side.
  * @return {}
  */
-Lumi.config = function (canvasWidth, canvasHeight) {
+Lumi.config = function (canvasWidth, canvasHeight, gravity, camera) {
   if (!canvasWidth) {
     canvasWidth = 400;
   }
-  if (canvasWidth == "fitToWindow") {
+  if (canvasWidth === "fitToWindow") {
     canvasWidth = window.innerWidth;
     Lumi.canvasCheck.width = "fitToWindow";
   }
   if (!canvasHeight) {
     canvasHeight = 400;
   }
-  if (canvasHeight == "fitToWindow") {
+  if (canvasHeight === "fitToWindow") {
     canvasHeight = window.innerHeight;
     Lumi.canvasCheck.height = "fitToWindow";
   }
+  if (!camera) {
+    camera = {
+      follow: "none",
+      type: "top",
+    }
+  }
+  if (!gravity) {
+    gravity = 0;
+  }
   Lumi.canvas.width = canvasWidth;
   Lumi.canvas.height = canvasHeight;
+  Lumi.camera = camera;
+  Lumi.gravity = gravity;
 };
 Lumi.resize = function () {
-  if (Lumi.canvasCheck.width == "fitToWindow") {
+  if (Lumi.canvasCheck.width === "fitToWindow") {
     Lumi.canvas.width = window.innerWidth;
   }
-  if (Lumi.canvasCheck.height == "fitToWindow") {
+  if (Lumi.canvasCheck.height === "fitToWindow") {
     Lumi.canvas.height = window.innerHeight;
   }
 };
@@ -455,3 +500,9 @@ Lumi.init = function () {
   requestAnimationFrame(Lumi.init);
   Lumi.renderFrame();
 };
+Lumi.config("fitToWindow", "fitToWindow", 5, {
+  follow: "none",
+  type: "side",
+});
+Lumi.init();
+var sqr1 = Lumi.addRect(10, 10, 50, 50);
