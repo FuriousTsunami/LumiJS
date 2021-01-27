@@ -89,6 +89,7 @@ Lumi.checkCollision = function(obj1, obj2) {
 Lumi.rect = function(x, y, w, h, config) {
     if (!config) {
         config = {
+            id: 0,
             restitution: 0,
             collision: {
                 collide: true,
@@ -97,6 +98,9 @@ Lumi.rect = function(x, y, w, h, config) {
             mass: 1,
             color: "#000000",
         };
+    }
+    if (!config.id) {
+        config.id = 0;
     }
     if (!config.restitution) {
         config.restitution = 0;
@@ -119,6 +123,7 @@ Lumi.rect = function(x, y, w, h, config) {
     if (!config.color) {
         config.color = "#000000";
     }
+    this.id = config.id;
     this.type = "rect";
     this.render = "rect";
     this.x = x;
@@ -165,6 +170,7 @@ Lumi.rect = function(x, y, w, h, config) {
         } else {
             this.velocity.increase.y = 0;
             this.gravity = 0;
+            this.y = window.innerHeight - this.height;
         }
         if (Lumi.camera.type === "side") {
             this.y += this.gravity * this.mass + this.velocity.increase.y;
@@ -193,6 +199,7 @@ Lumi.rect = function(x, y, w, h, config) {
 Lumi.ellipse = function(x, y, r, config) {
     if (!config) {
         config = {
+            id: 0,
             restitution: 0,
             collision: {
                 collide: true,
@@ -201,6 +208,9 @@ Lumi.ellipse = function(x, y, r, config) {
             mass: 1,
             color: "#000000",
         };
+    }
+    if (!config.id) {
+        config.id = 0;
     }
     if (!config.restitution) {
         config.restitution = 0;
@@ -223,6 +233,7 @@ Lumi.ellipse = function(x, y, r, config) {
     if (!config.color) {
         config.color = "#000000";
     }
+    this.id = config.id;
     this.type = "ellipse";
     this.render = "ellipse";
     this.x = x;
@@ -267,6 +278,7 @@ Lumi.ellipse = function(x, y, r, config) {
         } else {
             this.velocity.increase.y = 0;
             this.gravity = 0;
+            this.y = Lumi.objects[i].y - this.height;
         }
         if (Lumi.camera.type === "side") {
             this.y += this.gravity * this.mass + this.velocity.increase.y;
@@ -292,6 +304,7 @@ Lumi.ellipse = function(x, y, r, config) {
 Lumi.img = function(img, x, y, w, h, config) {
     if (!config) {
         config = {
+            id: 0,
             restitution: 0,
             collision: {
                 collide: true,
@@ -300,6 +313,9 @@ Lumi.img = function(img, x, y, w, h, config) {
             mass: 1,
             color: "#000000",
         };
+    }
+    if (!config.id) {
+        config.id = 0;
     }
     if (!config.restitution) {
         config.restitution = 0;
@@ -322,6 +338,7 @@ Lumi.img = function(img, x, y, w, h, config) {
     if (!config.color) {
         config.color = "#000000";
     }
+    this.id = config.id;
     this.type = "rect";
     this.render = "img";
     this.img = img;
@@ -369,6 +386,7 @@ Lumi.img = function(img, x, y, w, h, config) {
         } else {
             this.velocity.increase.y = 0;
             this.gravity = 0;
+            this.y = Lumi.objects[i].y - this.height;
         }
         if (Lumi.camera.type === "side") {
             this.y += this.gravity * this.mass + this.velocity.increase.y;
