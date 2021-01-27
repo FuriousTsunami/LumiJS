@@ -86,6 +86,20 @@ Lumi.checkCollision = function(obj1, obj2) {
         return false;
     }
 };
+Lumi.keyUp = function(direction, execute) {
+  document.onkeyup = function (evt) {
+    if (evt.keyCode === direction) {
+      execute();
+    }
+  }
+}
+Lumi.keyDown = function(direction, execute) {
+  document.onkeydown = function (evt) {
+    if (evt.keyCode === direction) {
+      execute();
+    }
+  }
+}
 Lumi.rect = function(x, y, w, h, config) {
     if (!config) {
         config = {
