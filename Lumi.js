@@ -144,7 +144,7 @@ Lumi.rect = function (x, y, w, h, config) {
   };
 
   /**
-   * Adds an X Velocity
+   * Adds an X Velocity. Used inside a Lumi.rect
    * @method this.addXVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -153,7 +153,7 @@ Lumi.rect = function (x, y, w, h, config) {
     this.velocity.x += vel;
   };
   /**
-   * Adds a Y Velocity
+   * Adds a Y Velocity. Used inside a Lumi.rect
    * @method this.addYVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -252,7 +252,7 @@ Lumi.ellipse = function (x, y, r, config) {
     }
   };
   /**
-   * Adds an X Velocity
+   * Adds an X Velocity. Used inside a Lumi.ellipse
    * @method this.addXVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -261,7 +261,7 @@ Lumi.ellipse = function (x, y, r, config) {
     this.velocity.x += vel;
   };
   /**
-   * Adds a Y Velocity
+   * Adds a Y Velocity. Used inside a Lumi.ellipse
    * @method this.addYVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -360,7 +360,7 @@ Lumi.img = function (img, x, y, w, h, config) {
   };
 
   /**
-   * Adds an X Velocity
+   * Adds an X Velocity. Used inside a Lumi.img
    * @method this.addXVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -369,7 +369,7 @@ Lumi.img = function (img, x, y, w, h, config) {
     this.velocity.x += vel;
   };
   /**
-   * Adds a Y Velocity
+   * Adds a Y Velocity. Used inside a Lumi.img
    * @method this.addYVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -469,7 +469,7 @@ Lumi.light = function (x, y, r, config) {
   };
 
   /**
-   * Adds an X Velocity
+   * Adds an X Velocity. Used inside a Lumi.light
    * @method this.addXVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
@@ -478,7 +478,7 @@ Lumi.light = function (x, y, r, config) {
     this.velocity.x += vel;
   };
   /**
-   * Adds a Y Velocity
+   * Adds a Y Velocity. Used inside a Lumi.light
    * @method this.addYVel
    * @param {number} vel The velocity at which to accelerate
    * @return {}
