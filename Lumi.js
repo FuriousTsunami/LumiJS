@@ -13,7 +13,7 @@ Lumi.canvasCheck = {
   height: "normal"
 };
 Lumi.camera = {
-  type: "top",
+  view: "top",
 };
 Lumi.gravity = 0;
 Lumi.objects = [];
@@ -171,7 +171,7 @@ Lumi.rect = function (x, y, w, h, config) {
       this.gravity = 0;
       this.y = window.innerHeight - this.height;
     }
-    if (Lumi.camera.type === "side") {
+    if (Lumi.camera.view === "side") {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -279,7 +279,7 @@ Lumi.ellipse = function (x, y, r, config) {
       this.gravity = 0;
       this.y = Lumi.objects[i].y - this.height;
     }
-    if (Lumi.camera.type === "side") {
+    if (Lumi.camera.view === "side") {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -387,7 +387,7 @@ Lumi.img = function (img, x, y, w, h, config) {
       this.gravity = 0;
       this.y = Lumi.objects[i].y - this.height;
     }
-    if (Lumi.camera.type === "side") {
+    if (Lumi.camera.view === "side") {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -495,7 +495,7 @@ Lumi.light = function (x, y, r, config) {
       this.velocity.increase.y = 0;
       this.gravity = 0;
     }
-    if (Lumi.camera.type === "side") {
+    if (Lumi.camera.view === "side") {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -593,7 +593,7 @@ Lumi.resolveCollision = function (obj1, obj2) {
 /**
  * Configures variables to run the Engine and Renderer.
  * @method Lumi.config
- * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvasWidth (can be "fitToWindow"), canvasHeight (can be "fitToWindow"), and camera (contains "type", which indicates the view of the camera and can be "top" or "side")
+ * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvasWidth (can be "fitToWindow"), canvasHeight (can be "fitToWindow"), and camera (contains "view", which indicates the view of the camera and can be "top" or "side")
  * @return {}
  */
 Lumi.config = function (config) {
@@ -613,7 +613,7 @@ Lumi.config = function (config) {
   }
   if (!config.camera) {
     config.camera = {
-      type: "top",
+      view: "top",
     }
   }
   if (!config.gravity) {
