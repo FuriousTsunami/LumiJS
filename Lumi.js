@@ -179,7 +179,7 @@ Lumi.rect = function (x, y, w, h, config) {
       this.gravity = 0;
       this.y = window.innerHeight - this.height;
     }
-    if (Lumi.camera.view === "side") {
+    if (Lumi.camera.view === "side" && this.mass !== 0) {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -287,7 +287,7 @@ Lumi.ellipse = function (x, y, r, config) {
       this.gravity = 0;
       this.y = Lumi.objects[i].y - this.height;
     }
-    if (Lumi.camera.view === "side") {
+    if (Lumi.camera.view === "side" && this.mass !== 0) {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -395,7 +395,7 @@ Lumi.img = function (img, x, y, w, h, config) {
       this.gravity = 0;
       this.y = Lumi.objects[i].y - this.height;
     }
-    if (Lumi.camera.view === "side") {
+    if (Lumi.camera.view === "side" && this.mass !== 0) {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
@@ -503,7 +503,7 @@ Lumi.light = function (x, y, r, config) {
       this.velocity.increase.y = 0;
       this.gravity = 0;
     }
-    if (Lumi.camera.view === "side") {
+    if (Lumi.camera.view === "side" && this.mass !== 0) {
       this.y += this.gravity * this.mass + this.velocity.increase.y;
       this.velocity.increase.y++;
     }
