@@ -2,7 +2,7 @@
  * LumiJS JavaScript Library
  * https://lumi.js.org
  *
- * Copyright FuriousTsunami
+ * Copyright 2020 Sunay Komarla
  * Released under the MIT license
  * https://opensource.org/licenses/MIT
  */
