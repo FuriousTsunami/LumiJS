@@ -1,3 +1,11 @@
+/*!
+ * LumiJS JavaScript Library
+ * https://lumi.js.org
+ *
+ * Copyright FuriousTsunami
+ * Released under the MIT license
+ * https://opensource.org/licenses/MIT
+ */
 var Lumi = function () {
   console.error("LumiJS: Lumi has no object to work with");
 };
