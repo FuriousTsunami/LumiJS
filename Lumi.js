@@ -601,22 +601,22 @@ Lumi.resolveCollision = function (obj1, obj2) {
 /**
  * Configures variables to run the Engine and Renderer.
  * @method Lumi.config
- * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvasWidth (can be "fitToWindow"), canvasHeight (can be "fitToWindow"), camera (contains "view", which indicates the view of the camera and can be "top" or "side"), and gravity (the amount of gravity for the engine)
+ * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvas (contains "width" and "height", which indicate the canvas width and height. Can be fitToWindow), camera (contains "view", which indicates the view of the camera and can be "top" or "side"), and gravity (the amount of gravity for the engine)
  * @return {}
  */
 Lumi.config = function (config) {
-  if (!config.canvasWidth) {
-    config.canvasWidth = 400;
+  if (!config.canvas.width) {
+    config.canvas.width = 400;
   }
-  if (config.canvasWidth === "fitToWindow") {
-    config.canvasWidth = window.innerWidth;
+  if (config.canvas.width === "fitToWindow") {
+    config.canvas.width = window.innerWidth;
     Lumi.canvasCheck.width = "fitToWindow";
   }
-  if (!config.canvasHeight) {
-    config.canvasHeight = 400;
+  if (!config.canvas.height) {
+    config.canvas.height = 400;
   }
-  if (config.canvasHeight === "fitToWindow") {
-    config.canvasHeight = window.innerHeight;
+  if (config.canvas.height === "fitToWindow") {
+    config.canvas.height = window.innerHeight;
     Lumi.canvasCheck.height = "fitToWindow";
   }
   if (!config.camera) {
@@ -627,8 +627,8 @@ Lumi.config = function (config) {
   if (!config.gravity) {
     config.gravity = 0;
   }
-  Lumi.canvas.width = config.canvasWidth;
-  Lumi.canvas.height = config.canvasHeight;
+  Lumi.canvas.width = config.canvas.width;
+  Lumi.canvas.height = config.canvas.height;
   Lumi.camera = config.camera;
   Lumi.gravity = config.gravity;
 };
