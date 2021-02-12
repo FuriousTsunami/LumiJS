@@ -106,28 +106,28 @@ Lumi.rect = function (x, y, w, h, config) {
       color: "#000000",
     };
   }
-  if (!config.id) {
+  if (typeof config.id === "undefined") {
     config.id = 0;
   }
-  if (!config.restitution) {
+  if (typeof config.restitution === "undefined") {
     config.restitution = 0;
   }
-  if (!config.collision) {
+  if (typeof config.collision === "undefined") {
     config.collision = {
       collide: true,
       affect: true,
     }
   }
-  if (!config.collision.collide) {
+  if (typeof config.collision.collide === "undefined") {
     config.collision.collide = true;
   }
-  if (!config.collision.affect) {
+  if (typeof config.collision.affect === "undefined") {
     config.collision.affect = true;
   }
-  if (!config.mass) {
+  if (typeof config.mass === "undefined") {
     config.mass = 1;
   }
-  if (!config.color) {
+  if (typeof config.color === "undefined") {
     config.color = "#000000";
   }
   this.id = config.id;
@@ -216,28 +216,28 @@ Lumi.ellipse = function (x, y, r, config) {
       color: "#000000",
     };
   }
-  if (!config.id) {
+  if (typeof config.id === "undefined") {
     config.id = 0;
   }
-  if (!config.restitution) {
+  if (typeof config.restitution === "undefined") {
     config.restitution = 0;
   }
-  if (!config.collision) {
+  if (typeof config.collision === "undefined") {
     config.collision = {
       collide: true,
       affect: true,
     }
   }
-  if (!config.collision.collide) {
+  if (typeof config.collision.collide === "undefined") {
     config.collision.collide = true;
   }
-  if (!config.collision.affect) {
+  if (typeof config.collision.affect === "undefined") {
     config.collison.affect = true;
   }
-  if (!config.mass) {
+  if (typeof config.mass === "undefined") {
     config.mass = 1;
   }
-  if (!config.color) {
+  if (typeof config.color === "undefined") {
     config.color = "#000000";
   }
   this.id = config.id;
@@ -321,28 +321,28 @@ Lumi.img = function (img, x, y, w, h, config) {
       color: "#000000",
     };
   }
-  if (!config.id) {
+  if (typeof config.id === "undefined") {
     config.id = 0;
   }
-  if (!config.restitution) {
+  if (typeof config.restitution === "undefined") {
     config.restitution = 0;
   }
-  if (!config.collision) {
+  if (typeof config.collision === "undefined") {
     config.collision = {
       collide: true,
       affect: true,
     }
   }
-  if (!config.collision.collide) {
+  if (typeof config.collision.collide === "undefined") {
     config.collision.collide = true;
   }
-  if (!config.collision.affect) {
+  if (typeof config.collision.affect === "undefined") {
     config.collision.affect = true;
   }
-  if (!config.mass) {
+  if (typeof config.mass === "undefined") {
     config.mass = 1;
   }
-  if (!config.color) {
+  if (typeof config.color === "undefined") {
     config.color = "#000000";
   }
   this.id = config.id;
@@ -432,28 +432,28 @@ Lumi.light = function (x, y, r, config) {
       color: "rgba(255, 255, 0, 1)",
     };
   }
-  if (!config.id) {
+  if (typeof config.id === "undefined") {
     config.id = 0;
   }
-  if (!config.restitution) {
+  if (typeof config.restitution === "undefined") {
     config.restitution = 0;
   }
-  if (!config.collision) {
+  if (typeof config.collision === "undefined") {
     config.collision = {
       collide: false,
       affect: false,
     }
   }
-  if (!config.collision.collide) {
+  if (typeof config.collision.collide === "undefined") {
     config.collision.collide = false;
   }
-  if (!config.collision.affect) {
+  if (typeof config.collision.affect === "undefined") {
     config.collision.affect = false;
   }
-  if (!config.mass) {
+  if (typeof config.mass === "undefined") {
     config.mass = 0;
   }
-  if (!config.color) {
+  if (typeof config.color === "undefined") {
     config.color = "rgba(255, 255, 0, 1)";
   }
   this.id = config.id;
@@ -601,7 +601,7 @@ Lumi.resolveCollision = function (obj1, obj2) {
 /**
  * Configures variables to run the Engine and Renderer.
  * @method Lumi.config
- * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvasWidth (can be "fitToWindow"), canvasHeight (can be "fitToWindow"), and camera (contains "view", which indicates the view of the camera and can be "top" or "side")
+ * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvasWidth (can be "fitToWindow"), canvasHeight (can be "fitToWindow"), camera (contains "view", which indicates the view of the camera and can be "top" or "side"), and gravity (the amount of gravity for the engine)
  * @return {}
  */
 Lumi.config = function (config) {
