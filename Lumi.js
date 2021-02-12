@@ -2,8 +2,8 @@
  * LumiJS JavaScript Library
  * https://lumi.js.org
  *
- * Copyright 2020 Sunay Komarla
- * Released under the MIT license
+ * Copyright (c) 2020 Sunay Komarla
+ * Released under The MIT License
  * https://opensource.org/licenses/MIT
  */
 var Lumi = function () {
