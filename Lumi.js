@@ -33,143 +33,77 @@ Lumi.objects = [];
  * @return {}
  */
 Lumi.checkCollision = function (obj1, obj2) {
-  if (obj1.type === "rect" && obj2.type === "rect") {
-    if (obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x && obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y) {
-      return true;
-    }
-  } else if (obj1.type === "rect" && obj2.type === "ellipse") {
-    var distX = Math.abs(obj2.x - obj1.x - obj1.width / 2);
-    var distY = Math.abs(obj2.y - obj1.y - obj1.height / 2);
-
-    if (distX > (obj1.width / 2 + obj2.radius)) {
-      return false;
-    }
-    if (distY > (obj1.height / 2 + obj2.radius)) {
-      return false;
-    }
-
-    if (distX <= (obj1.width / 2)) {
-      return true;
-    }
-    if (distY <= (obj1.height / 2)) {
-      return true;
-    }
-
-    var dx = distX - obj1.width / 2;
-    var dy = distY - obj1.height / 2;
-    return (dx * dx + dy * dy <= (obj2.radius * obj2.radius));
-  } else if (obj1.type === "ellipse" && obj2.type === "ellipse") {
-    var dx = obj1.x - obj2.x;
-    var dy = obj1.y - obj2.y;
-    var distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < obj1.radius + obj2.radius) {
-      return true;
-    } else {
-      return false;
-    }
-  } else if (obj1.type === "ellipse" && obj2.type === "rect") {
-    var distX = Math.abs(obj1.x - obj2.x - obj2.width / 2);
-    var distY = Math.abs(obj1.y - obj2.y - obj2.height / 2);
-
-    if (distX > (obj2.width / 2 + obj1.radius)) {
-      return false;
-    }
-    if (distY > (obj2.height / 2 + obj1.radius)) {
-      return false;
-    }
-
-    if (distX <= (obj2.width / 2)) {
-      return true;
-    }
-    if (distY <= (obj2.height / 2)) {
-      return true;
-    }
-
-    var dx = distX - obj2.width / 2;
-    var dy = distY - obj2.height / 2;
-    return (dx * dx + dy * dy <= (obj1.radius * obj1.radius));
+  if (obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x && obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y) {
+    return true;
   } else {
     return false;
   }
 };
-Lumi.rect = function (x, y, w, h, config) {
-  if (!config) {
-    config = {
-      id: 0,
-      restitution: 0,
-      collision: {
+Lumi.object = class {
+  constructor(x, y, w, h, config) {
+    if (!config) {
+      config = {
+        id: 0,
+        restitution: 0,
+        collision: {
+          collide: true,
+          affect: true,
+        },
+        mass: 1,
+        color: "#000000",
+      };
+    }
+    if (typeof config.id === "undefined") {
+      config.id = 0;
+    }
+    if (typeof config.restitution === "undefined") {
+      config.restitution = 0;
+    }
+    if (typeof config.collision === "undefined") {
+      config.collision = {
         collide: true,
         affect: true,
-      },
-      mass: 1,
-      color: "#000000",
-    };
-  }
-  if (typeof config.id === "undefined") {
-    config.id = 0;
-  }
-  if (typeof config.restitution === "undefined") {
-    config.restitution = 0;
-  }
-  if (typeof config.collision === "undefined") {
-    config.collision = {
-      collide: true,
-      affect: true,
+      }
     }
-  }
-  if (typeof config.collision.collide === "undefined") {
-    config.collision.collide = true;
-  }
-  if (typeof config.collision.affect === "undefined") {
-    config.collision.affect = true;
-  }
-  if (typeof config.mass === "undefined") {
-    config.mass = 1;
-  }
-  if (typeof config.color === "undefined") {
-    config.color = "#000000";
-  }
-  this.id = config.id;
-  this.type = "rect";
-  this.render = "rect";
-  this.x = x;
-  this.y = y;
-  this.width = w;
-  this.height = h;
-  this.color = config.color;
-  this.restitution = config.restitution;
-  this.collision = config.collision;
-  this.gravity = 0;
-  this.mass = config.mass;
-  this.velocity = {
-    x: 0,
-    y: 0,
-    increase: {
+    if (typeof config.collision.collide === "undefined") {
+      config.collision.collide = true;
+    }
+    if (typeof config.collision.affect === "undefined") {
+      config.collision.affect = true;
+    }
+    if (typeof config.mass === "undefined") {
+      config.mass = 1;
+    }
+    if (typeof config.color === "undefined") {
+      config.color = "#000000";
+    }
+    this.id = config.id;
+    this.x = x;
+    this.y = y;
+    this.width = w;
+    this.height = h;
+    this.color = config.color;
+    this.restitution = config.restitution;
+    this.collision = config.collision;
+    this.gravity = 0;
+    this.mass = config.mass;
+    this.velocity = {
       x: 0,
       y: 0,
-    }
-  };
+      increase: {
+        x: 0,
+        y: 0,
+      }
+    };
 
-  /**
-   * Adds an X Velocity. Used inside a Lumi.rect
-   * @method this.addXVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addXVel = function (vel) {
+  }
+  addXVel(vel) {
     this.velocity.x += vel;
   };
-  /**
-   * Adds a Y Velocity. Used inside a Lumi.rect
-   * @method this.addYVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addYVel = function (vel) {
+  addYVel(vel) {
     this.velocity.y += vel;
   };
-  this.update = function () {
+  update() {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
     if (this.y <= window.innerHeight - this.height) {
@@ -202,223 +136,90 @@ Lumi.rect = function (x, y, w, h, config) {
       }
     }
   };
+}
+Lumi.rect = class extends Lumi.object {
+  constructor(x, y, w, h, config) {
+    super(x, y, w, h, config);
+    this.type = "rect";
+    this.render = "rect";
+  }
 };
-Lumi.ellipse = function (x, y, r, config) {
-  if (!config) {
-    config = {
-      id: 0,
-      restitution: 0,
-      collision: {
-        collide: true,
-        affect: true,
-      },
-      mass: 1,
-      color: "#000000",
-    };
+Lumi.ellipse = class extends Lumi.object {
+  constructor(x, y, w, h, config) {
+    super(x, y, w, h, config);
+    this.type = "ellipse";
+    this.render = "ellipse";
   }
-  if (typeof config.id === "undefined") {
-    config.id = 0;
+};
+Lumi.img = class extends Lumi.object {
+  constructor(img, x, y, w, h, config) {
+    super(x, y, w, h, config);
+    this.type = "rect";
+    this.render = "img";
+    this.img = img;
   }
-  if (typeof config.restitution === "undefined") {
-    config.restitution = 0;
-  }
-  if (typeof config.collision === "undefined") {
-    config.collision = {
-      collide: true,
-      affect: true,
+};
+Lumi.light = class extends Lumi.object {
+  constructor(x, y, r, config) {
+    this.type = "ellipse";
+    this.render = "img";
+    if (!config) {
+      config = {
+        id: 0,
+        restitution: 0,
+        collision: {
+          collide: false,
+          affect: false,
+        },
+        mass: 0,
+        color: "rgba(255, 255, 0, 1)",
+      };
     }
-  }
-  if (typeof config.collision.collide === "undefined") {
-    config.collision.collide = true;
-  }
-  if (typeof config.collision.affect === "undefined") {
-    config.collison.affect = true;
-  }
-  if (typeof config.mass === "undefined") {
-    config.mass = 1;
-  }
-  if (typeof config.color === "undefined") {
-    config.color = "#000000";
-  }
-  this.id = config.id;
-  this.type = "ellipse";
-  this.render = "ellipse";
-  this.x = x;
-  this.y = y;
-  this.radius = r;
-  this.color = config.color;
-  this.restitution = config.restitution;
-  this.collision = config.collision;
-  this.gravity = 0;
-  this.mass = config.mass;
-  this.velocity = {
-    x: 0,
-    y: 0,
-    increase: {
+    if (typeof config.id === "undefined") {
+      config.id = 0;
+    }
+    if (typeof config.restitution === "undefined") {
+      config.restitution = 0;
+    }
+    if (typeof config.collision === "undefined") {
+      config.collision = {
+        collide: false,
+        affect: false,
+      }
+    }
+    if (typeof config.collision.collide === "undefined") {
+      config.collision.collide = false;
+    }
+    if (typeof config.collision.affect === "undefined") {
+      config.collision.affect = false;
+    }
+    if (typeof config.mass === "undefined") {
+      config.mass = 0;
+    }
+    if (typeof config.color === "undefined") {
+      config.color = "rgba(255, 255, 0, 1)";
+    }
+    this.id = config.id;
+    this.type = "rect";
+    this.render = "light";
+    this.x = x;
+    this.y = y;
+    this.radius = r;
+    this.color = config.color;
+    this.restitution = config.restitution;
+    this.collision = config.collision;
+    this.gravity = 0;
+    this.mass = config.mass;
+    this.velocity = {
       x: 0,
       y: 0,
-    }
-  };
-  /**
-   * Adds an X Velocity. Used inside a Lumi.ellipse
-   * @method this.addXVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addXVel = function (vel) {
-    this.velocity.x += vel;
-  };
-  /**
-   * Adds a Y Velocity. Used inside a Lumi.ellipse
-   * @method this.addYVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addYVel = function (vel) {
-    this.velocity.y += vel;
-  };
-  this.update = function () {
-    this.x += this.velocity.x;
-    this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.radius) {
-      this.gravity = Lumi.gravity;
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-      this.y = Lumi.objects[i].y - this.height;
-    }
-    if (Lumi.camera.view === "side" && this.mass !== 0) {
-      this.y += this.gravity * this.mass + this.velocity.increase.y;
-      this.velocity.increase.y++;
-    }
-    for (var i = 0; i < Lumi.objects.length; i++) {
-      if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
-        continue;
+      increase: {
+        x: 0,
+        y: 0,
       }
-      if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.collision.affect) {
-          if (this.y < Lumi.objects[i].y + this.height) {
-            this.velocity.increase.y = 0;
-            this.gravity = 0;
-            this.y = Lumi.objects[i].y - this.height;
-          }
-          Lumi.resolveCollision(this, Lumi.objects[i]);
-        }
-      }
-    }
-  };
-};
-Lumi.img = function (img, x, y, w, h, config) {
-  if (!config) {
-    config = {
-      id: 0,
-      restitution: 0,
-      collision: {
-        collide: true,
-        affect: true,
-      },
-      mass: 1,
-      color: "#000000",
     };
   }
-  if (typeof config.id === "undefined") {
-    config.id = 0;
-  }
-  if (typeof config.restitution === "undefined") {
-    config.restitution = 0;
-  }
-  if (typeof config.collision === "undefined") {
-    config.collision = {
-      collide: true,
-      affect: true,
-    }
-  }
-  if (typeof config.collision.collide === "undefined") {
-    config.collision.collide = true;
-  }
-  if (typeof config.collision.affect === "undefined") {
-    config.collision.affect = true;
-  }
-  if (typeof config.mass === "undefined") {
-    config.mass = 1;
-  }
-  if (typeof config.color === "undefined") {
-    config.color = "#000000";
-  }
-  this.id = config.id;
-  this.type = "rect";
-  this.render = "img";
-  this.img = img;
-  this.x = x;
-  this.y = y;
-  this.width = w;
-  this.height = h;
-  this.color = config.color;
-  this.restitution = config.restitution;
-  this.collision = config.collision;
-  this.gravity = 0;
-  this.mass = config.mass;
-  this.velocity = {
-    x: 0,
-    y: 0,
-    increase: {
-      x: 0,
-      y: 0,
-    }
-  };
-
-  /**
-   * Adds an X Velocity. Used inside a Lumi.img
-   * @method this.addXVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addXVel = function (vel) {
-    this.velocity.x += vel;
-  };
-  /**
-   * Adds a Y Velocity. Used inside a Lumi.img
-   * @method this.addYVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addYVel = function (vel) {
-    this.velocity.y += vel;
-  };
-  this.update = function () {
-    this.x += this.velocity.x;
-    this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.height) {
-      this.gravity = Lumi.gravity;
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-      this.y = Lumi.objects[i].y - this.height;
-    }
-    if (Lumi.camera.view === "side" && this.mass !== 0) {
-      this.y += this.gravity * this.mass + this.velocity.increase.y;
-      this.velocity.increase.y++;
-    }
-    for (var i = 0; i < Lumi.objects.length; i++) {
-      if (this === Lumi.objects[i]) {
-        continue;
-      }
-      if (!this.collision.collide || !Lumi.objects[i].collision.collide) {
-        continue;
-      }
-      if (Lumi.checkCollision(this, Lumi.objects[i])) {
-        if (this.collision.affect) {
-          if (this.y < Lumi.objects[i].y + this.height) {
-            this.velocity.increase.y = 0;
-            this.gravity = 0;
-            this.y = Lumi.objects[i].y - this.height;
-          }
-          Lumi.resolveCollision(this, Lumi.objects[i]);
-        }
-      }
-    }
-  };
-};
+}
 Lumi.light = function (x, y, r, config) {
   if (!config) {
     config = {
@@ -532,8 +333,8 @@ Lumi.addRect = function (x, y, width, height, config) {
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addEllipse = function (x, y, radius, config) {
-  Lumi.objects.push(new Lumi.ellipse(x, y, radius, config));
+Lumi.addEllipse = function (x, y, width, height, config) {
+  Lumi.objects.push(new Lumi.ellipse(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 }
 /**
@@ -657,13 +458,15 @@ Lumi.renderFrame = function () {
       ctx.fillStyle = "#000000";
     } else if (Lumi.objects[i].render === "ellipse") {
       ctx.beginPath();
-      ctx.arc(
+      ctx.ellipse(
         Lumi.objects[i].x,
         Lumi.objects[i].y,
-        Lumi.objects[i].radius,
+        Lumi.objects[i].width,
+        Lumi.objects[i].height,
         0,
-        2 * Math.PI,
-        false,
+        0,
+        Math.PI * 2,
+        false
       );
       ctx.fillStyle = Lumi.objects[i].color;
       ctx.fill();
@@ -680,11 +483,11 @@ Lumi.renderFrame = function () {
       Lumi.objects[i].update();
     } else if (Lumi.objects[i].render === "light") {
       var fill = ctx.createRadialGradient(
-        Lumi.objects[i].x, 
-        Lumi.objects[i].y, 
-        0, 
-        Lumi.objects[i].x, 
-        Lumi.objects[i].y, 
+        Lumi.objects[i].x,
+        Lumi.objects[i].y,
+        0,
+        Lumi.objects[i].x,
+        Lumi.objects[i].y,
         Lumi.objects[i].radius,
       );
       fill.addColorStop(0, Lumi.objects[i].color);
@@ -692,11 +495,11 @@ Lumi.renderFrame = function () {
       ctx.beginPath();
       ctx.fillStyle = fill;
       ctx.arc(
-        Lumi.objects[i].x, 
-        Lumi.objects[i].y, 
-        Lumi.objects[i].radius, 
-        0, 
-        Math.PI * 2, 
+        Lumi.objects[i].x,
+        Lumi.objects[i].y,
+        Lumi.objects[i].radius,
+        0,
+        Math.PI * 2,
         false
       );
       ctx.fill();
