@@ -3,7 +3,7 @@
  * https://lumi.js.org
  *
  * Copyright (c) 2020 Sunay Komarla
- * Released under The MIT License
+ * Released under The MIT License (MIT)
  * https://opensource.org/licenses/MIT
  */
 var Lumi = function () {
