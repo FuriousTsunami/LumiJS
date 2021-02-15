@@ -161,8 +161,6 @@ Lumi.img = class extends Lumi.object {
 };
 Lumi.light = class extends Lumi.object {
   constructor(x, y, r, config) {
-    this.type = "ellipse";
-    this.render = "img";
     if (!config) {
       config = {
         id: 0,
@@ -205,6 +203,8 @@ Lumi.light = class extends Lumi.object {
     this.x = x;
     this.y = y;
     this.radius = r;
+    this.width = radius;
+    this.height = radius;
     this.color = config.color;
     this.restitution = config.restitution;
     this.collision = config.collision;
@@ -219,96 +219,6 @@ Lumi.light = class extends Lumi.object {
       }
     };
   }
-};
-Lumi.light = function (x, y, r, config) {
-  if (!config) {
-    config = {
-      id: 0,
-      restitution: 0,
-      collision: {
-        collide: false,
-        affect: false,
-      },
-      mass: 0,
-      color: "rgba(255, 255, 0, 1)",
-    };
-  }
-  if (typeof config.id === "undefined") {
-    config.id = 0;
-  }
-  if (typeof config.restitution === "undefined") {
-    config.restitution = 0;
-  }
-  if (typeof config.collision === "undefined") {
-    config.collision = {
-      collide: false,
-      affect: false,
-    };
-  }
-  if (typeof config.collision.collide === "undefined") {
-    config.collision.collide = false;
-  }
-  if (typeof config.collision.affect === "undefined") {
-    config.collision.affect = false;
-  }
-  if (typeof config.mass === "undefined") {
-    config.mass = 0;
-  }
-  if (typeof config.color === "undefined") {
-    config.color = "rgba(255, 255, 0, 1)";
-  }
-  this.id = config.id;
-  this.type = "rect";
-  this.render = "light";
-  this.x = x;
-  this.y = y;
-  this.radius = r;
-  this.color = config.color;
-  this.restitution = config.restitution;
-  this.collision = config.collision;
-  this.gravity = 0;
-  this.mass = config.mass;
-  this.velocity = {
-    x: 0,
-    y: 0,
-    increase: {
-      x: 0,
-      y: 0,
-    }
-  };
-
-  /**
-   * Adds an X Velocity. Used inside a Lumi.light
-   * @method this.addXVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addXVel = function (vel) {
-    this.velocity.x += vel;
-  };
-  /**
-   * Adds a Y Velocity. Used inside a Lumi.light
-   * @method this.addYVel
-   * @param {number} vel The velocity at which to accelerate
-   * @return {}
-   */
-  this.addYVel = function (vel) {
-    this.velocity.y += vel;
-  };
-  this.update = function () {
-    this.x += this.velocity.x;
-    this.y += this.velocity.y;
-    if (this.y <= window.innerHeight - this.height) {
-      this.gravity = Lumi.gravity;
-    } else {
-      this.velocity.increase.y = 0;
-      this.gravity = 0;
-    }
-    if (Lumi.camera.view === "side" && this.mass !== 0) {
-      this.y += this.gravity * this.mass + this.velocity.increase.y;
-      this.velocity.increase.y++;
-    }
-  };
 };
 /**
  * Adds a rectangle to the canvas
