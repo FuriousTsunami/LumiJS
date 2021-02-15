@@ -63,7 +63,7 @@ Lumi.object = class {
       config.collision = {
         collide: true,
         affect: true,
-      }
+      };
     }
     if (typeof config.collision.collide === "undefined") {
       config.collision.collide = true;
@@ -99,10 +99,10 @@ Lumi.object = class {
   }
   addXVel(vel) {
     this.velocity.x += vel;
-  };
+  }
   addYVel(vel) {
     this.velocity.y += vel;
-  };
+  }
   update() {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
@@ -135,8 +135,8 @@ Lumi.object = class {
         }
       }
     }
-  };
-}
+  }
+};
 Lumi.rect = class extends Lumi.object {
   constructor(x, y, w, h, config) {
     super(x, y, w, h, config);
@@ -185,7 +185,7 @@ Lumi.light = class extends Lumi.object {
       config.collision = {
         collide: false,
         affect: false,
-      }
+      };
     }
     if (typeof config.collision.collide === "undefined") {
       config.collision.collide = false;
@@ -219,7 +219,7 @@ Lumi.light = class extends Lumi.object {
       }
     };
   }
-}
+};
 Lumi.light = function (x, y, r, config) {
   if (!config) {
     config = {
@@ -243,7 +243,7 @@ Lumi.light = function (x, y, r, config) {
     config.collision = {
       collide: false,
       affect: false,
-    }
+    };
   }
   if (typeof config.collision.collide === "undefined") {
     config.collision.collide = false;
@@ -336,7 +336,7 @@ Lumi.addRect = function (x, y, width, height, config) {
 Lumi.addEllipse = function (x, y, width, height, config) {
   Lumi.objects.push(new Lumi.ellipse(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
-}
+};
 /**
  * Adds an image to the canvas
  * @method Lumi.addImg
@@ -364,7 +364,7 @@ Lumi.addImg = function (img, x, y, width, height, config) {
 Lumi.addLight = function (x, y, radius, config) {
   Lumi.objects.push(new Lumi.light(x, y, radius, config));
   return Lumi.objects[Lumi.objects.length - 1];
-}
+};
 /**
  * Resolves an elastic collision between player and obstacle
  * @method Lumi.resolveCollision
@@ -423,7 +423,7 @@ Lumi.config = function (config) {
   if (!config.camera) {
     config.camera = {
       view: "top",
-    }
+    };
   }
   if (!config.gravity) {
     config.gravity = 0;
@@ -452,7 +452,7 @@ Lumi.renderFrame = function () {
         Lumi.objects[i].x,
         Lumi.objects[i].y,
         Lumi.objects[i].width,
-        Lumi.objects[i].height,
+        Lumi.objects[i].height
       );
       Lumi.objects[i].update();
       ctx.fillStyle = "#000000";
@@ -478,7 +478,7 @@ Lumi.renderFrame = function () {
         Lumi.objects[i].x,
         Lumi.objects[i].y,
         Lumi.objects[i].width,
-        Lumi.objects[i].height,
+        Lumi.objects[i].height
       );
       Lumi.objects[i].update();
     } else if (Lumi.objects[i].render === "light") {
@@ -488,7 +488,7 @@ Lumi.renderFrame = function () {
         0,
         Lumi.objects[i].x,
         Lumi.objects[i].y,
-        Lumi.objects[i].radius,
+        Lumi.objects[i].radius
       );
       fill.addColorStop(0, Lumi.objects[i].color);
       fill.addColorStop(1, "rgba(0, 0, 0, 0)");
