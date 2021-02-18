@@ -25,6 +25,7 @@ Lumi.camera = {
 };
 Lumi.gravity = 0;
 Lumi.objects = [];
+Lumi.include = function () { }
 /**
  * Checks if two objects are colliding
  * @method Lumi.checkCollision
@@ -316,32 +317,36 @@ Lumi.resolveCollision = function (obj1, obj2) {
  * @return {}
  */
 Lumi.config = function (config) {
-  if (!config.canvas.width) {
+  if (typeof config.canvas.width === "undefined") {
     config.canvas.width = 400;
   }
   if (config.canvas.width === "fitToWindow") {
     config.canvas.width = window.innerWidth;
     Lumi.canvasCheck.width = "fitToWindow";
   }
-  if (!config.canvas.height) {
+  if (typeof config.canvas.height === "undefined") {
     config.canvas.height = 400;
   }
   if (config.canvas.height === "fitToWindow") {
     config.canvas.height = window.innerHeight;
     Lumi.canvasCheck.height = "fitToWindow";
   }
-  if (!config.camera) {
+  if (typeof config.camera === "undefined") {
     config.camera = {
       view: "top",
     };
   }
-  if (!config.gravity) {
+  if (typeof config.gravity === "undefined") {
     config.gravity = 0;
+  }
+  if (typeof config.include === "undefined") {
+    config.include = function () { };
   }
   Lumi.canvas.width = config.canvas.width;
   Lumi.canvas.height = config.canvas.height;
   Lumi.camera = config.camera;
   Lumi.gravity = config.gravity;
+  Lumi.include = config.include;
 };
 Lumi.resize = function () {
   if (Lumi.canvasCheck.width === "fitToWindow") {
@@ -355,6 +360,9 @@ window.onresize = Lumi.resize;
 Lumi.renderFrame = function () {
   scrollTo(10, 10);
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  if (typeof Lumi.include === "function") {
+    Lumi.include();
+  }
   for (var i = 0; i < Lumi.objects.length; i++) {
     if (Lumi.objects[i].render === "rect") {
       ctx.fillStyle = Lumi.objects[i].color;
