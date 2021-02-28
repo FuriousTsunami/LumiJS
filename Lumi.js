@@ -6,7 +6,7 @@
  * Released under The MIT License (MIT)
  * https://opensource.org/licenses/MIT
  */
-var Lumi = function() {
+var Lumi = function () {
   console.error("LumiJS: Lumi has no object to work with");
 };
 Lumi.canvas = document.createElement("CANVAS");
@@ -25,7 +25,7 @@ Lumi.camera = {
 };
 Lumi.gravity = 0;
 Lumi.objects = [];
-Lumi.include = function() {}
+Lumi.include = function () { };
 /**
  * Checks if two objects are colliding
  * @method Lumi.checkCollision
@@ -33,7 +33,7 @@ Lumi.include = function() {}
  * @param {object} obj2 The second collision object
  * @return {}
  */
-Lumi.checkCollision = function(obj1, obj2) {
+Lumi.checkCollision = function (obj1, obj2) {
   return obj1.x < obj2.x + obj2.width && obj1.x + obj1.width > obj2.x && obj1.y < obj2.y + obj2.height && obj1.y + obj1.height > obj2.y
 };
 Lumi.object = class {
@@ -227,7 +227,7 @@ Lumi.light = class extends Lumi.object {
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addRect = function(x, y, width, height, config) {
+Lumi.addRect = function (x, y, width, height, config) {
   Lumi.objects.push(new Lumi.rect(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
@@ -240,7 +240,7 @@ Lumi.addRect = function(x, y, width, height, config) {
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addEllipse = function(x, y, width, height, config) {
+Lumi.addEllipse = function (x, y, width, height, config) {
   Lumi.objects.push(new Lumi.ellipse(x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
@@ -255,7 +255,7 @@ Lumi.addEllipse = function(x, y, width, height, config) {
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addImg = function(img, x, y, width, height, config) {
+Lumi.addImg = function (img, x, y, width, height, config) {
   Lumi.objects.push(new Lumi.img(img, x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
@@ -268,7 +268,7 @@ Lumi.addImg = function(img, x, y, width, height, config) {
  * @param {object} config (Optional) The settings for this light containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addLight = function(x, y, radius, config) {
+Lumi.addLight = function (x, y, radius, config) {
   Lumi.objects.push(new Lumi.light(x, y, radius, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
@@ -279,7 +279,7 @@ Lumi.addLight = function(x, y, radius, config) {
  * @param {object} obj2 The second object that has collided
  * @return {}
  */
-Lumi.resolveCollision = function(obj1, obj2) {
+Lumi.resolveCollision = function (obj1, obj2) {
   var pMidX = obj1.getMidX();
   var pMidY = obj1.getMidY();
   var aMidX = obj2.getMidX();
@@ -290,7 +290,12 @@ Lumi.resolveCollision = function(obj1, obj2) {
   var absDY = Math.abs(dy);
   if (Math.abs(absDX - absDY) < 0.1) {
     if (dx < 0) {
-      obj1.x = obj2.getRight() + obj1.width;
+      if (obj1.type === "rect") {
+        obj1.x = obj2.getRight();
+      }
+      else if (obj1.type === "ellipse") {
+        obj1.x = obj2.getRight() + obj1.width;
+      }
     } else {
       obj1.x = obj2.getLeft() - obj1.width;
     }
@@ -311,7 +316,12 @@ Lumi.resolveCollision = function(obj1, obj2) {
     }
   } else if (absDX > absDY) {
     if (dx < 0) {
-      obj1.x = obj2.getRight() + obj1.width;
+      if (obj1.type === "rect") {
+        obj1.x = obj2.getRight();
+      }
+      else if (obj1.type === "ellipse") {
+        obj1.x = obj2.getRight() + obj1.width;
+      }
     } else {
       obj1.x = obj2.getLeft() - obj1.width;
     }
@@ -335,7 +345,7 @@ Lumi.resolveCollision = function(obj1, obj2) {
  * @param {object} config A JSON object containing all the configurations for the LumiJS engine, such as canvas (contains "width" and "height", which indicate the canvas width and height. Can be fitToWindow), camera (contains "view", which indicates the view of the camera and can be "top" or "side"), and gravity (the amount of gravity for the engine)
  * @return {}
  */
-Lumi.config = function(config) {
+Lumi.config = function (config) {
   if (typeof config.canvas.width === "undefined") {
     config.canvas.width = 400;
   }
@@ -359,7 +369,7 @@ Lumi.config = function(config) {
     config.gravity = 0;
   }
   if (typeof config.include === "undefined") {
-    config.include = function() {};
+    config.include = function () { };
   }
   Lumi.canvas.width = config.canvas.width;
   Lumi.canvas.height = config.canvas.height;
@@ -367,7 +377,7 @@ Lumi.config = function(config) {
   Lumi.gravity = config.gravity;
   Lumi.include = config.include;
 };
-Lumi.resize = function() {
+Lumi.resize = function () {
   if (Lumi.canvasCheck.width === "fitToWindow") {
     Lumi.canvas.width = window.innerWidth;
   }
@@ -376,7 +386,7 @@ Lumi.resize = function() {
   }
 };
 window.onresize = Lumi.resize;
-Lumi.renderFrame = function() {
+Lumi.renderFrame = function () {
   scrollTo(10, 10);
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
   if (typeof Lumi.include === "function") {
@@ -450,7 +460,7 @@ Lumi.renderFrame = function() {
  * @method Lumi.init
  * @return {}
  */
-Lumi.init = function() {
+Lumi.init = function () {
   requestAnimationFrame(Lumi.init);
   Lumi.renderFrame();
 };
