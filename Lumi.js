@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 var Lumi = function () {
-  console.error("LumiJS: Lumi has no object to work with");
+  throw new Error("LumiJS: Method not provided");
 };
 Lumi.canvas = document.createElement("CANVAS");
 Lumi.canvas.id = "canvas";
@@ -169,7 +169,7 @@ Lumi.ellipse = class extends Lumi.object {
     this.render = "ellipse";
   }
 };
-Lumi.img = class extends Lumi.object {
+Lumi.sprite = class extends Lumi.object {
   constructor(img, x, y, w, h, config) {
     super(x, y, w, h, config);
     this.type = "rect";
@@ -191,12 +191,38 @@ Lumi.light = class extends Lumi.object {
         color: "rgba(255, 255, 0, 1)",
       };
     }
+
     if (typeof config.id === "undefined") {
       config.id = 0;
     }
+
+    if (typeof config.restitution === "undefined") {
+      config.restitution = 0;
+    }
+
+    if (typeof config.collision === "undefined") {
+      config.collision = {
+        collide: false,
+        affect: false,
+      };
+    }
+
+    if (typeof config.collision.collide === "undefined") {
+      config.collision.collide = false;
+    }
+
+    if (typeof config.collision.affect === "undefined") {
+      config.collision.affect = false;
+    }
+
+    if (typeof config.mass === "undefined") {
+      config.mass = 1;
+    }
+  
     if (typeof config.color === "undefined") {
       config.color = "rgba(255, 255, 0, 1)";
     }
+    super(x, y, r / 2, r / 2, config);
     this.id = config.id;
     this.type = "rect";
     this.render = "light";
@@ -246,7 +272,7 @@ Lumi.addEllipse = function (x, y, width, height, config) {
 };
 /**
  * Adds an image to the canvas
- * @method Lumi.addImg
+ * @method Lumi.addSprite
  * @param {element} img The Image to render.
  * @param {number} x The X-Coordinate of the image.
  * @param {number} y The Y-Coordinate of the image.
@@ -255,8 +281,8 @@ Lumi.addEllipse = function (x, y, width, height, config) {
  * @param {object} config (Optional) The settings for this rectangle containing restitution (how much velocity and object will retain on impact), collision.collide (if it can be collided with), collision.affect (if it is affected by collisions), mass, and color.
  * @return {number} The position of this object in the "objects" array.
  */
-Lumi.addImg = function (img, x, y, width, height, config) {
-  Lumi.objects.push(new Lumi.img(img, x, y, width, height, config));
+Lumi.addSprite = function (img, x, y, width, height, config) {
+  Lumi.objects.push(new Lumi.sprite(img, x, y, width, height, config));
   return Lumi.objects[Lumi.objects.length - 1];
 };
 /**
