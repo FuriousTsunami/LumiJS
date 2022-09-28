@@ -1,5 +1,18 @@
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack");
 const path = require("path");
+
+var coyprightInfo = 
+`
+/*!
+  * LumiJS JavaScript Library
+  * https://lumi.js.org
+  *
+  * Copyright (c) 2020 Sunay Komarla
+  * Released under The MIT License (MIT)
+  * https://opensource.org/licenses/MIT
+  */
+`;
 
 module.exports = {
   entry: {
@@ -23,12 +36,17 @@ module.exports = {
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin({
-      terserOptions: {
-        
-      },
+      extractComments: false,
       include: /\.min\.js$/,
     })]
   },
+  plugins: [
+    new webpack.BannerPlugin({
+      banner: coyprightInfo,
+      raw: true,
+      entryOnly: true,
+    })
+  ],
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "dist"),

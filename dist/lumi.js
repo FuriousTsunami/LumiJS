@@ -1,3 +1,13 @@
+
+/*!
+  * LumiJS JavaScript Library
+  * https://lumi.js.org
+  *
+  * Copyright (c) 2020 Sunay Komarla
+  * Released under The MIT License (MIT)
+  * https://opensource.org/licenses/MIT
+  */
+
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
