@@ -1,5 +1,12 @@
-var testVarWithType: string = "TestStr";
+class Scene {
+  canvas: HTMLCanvasElement;
+  options: Object;
+  constructor (canvas: HTMLCanvasElement, options: Object) {
+    this.canvas = canvas;
+    this.options = options;
+  }
+}
 
-export var sayHello: Function = function (message: String) {
-  console.log(message);
+export default {
+  Scene: Scene
 };
