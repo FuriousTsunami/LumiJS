@@ -26,12 +26,17 @@ var __webpack_exports__ = {};
 var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.sayHello = void 0;
-var testVarWithType = "TestStr";
-var sayHello = function (message) {
-    console.log(message);
+exports.Lumi = void 0;
+var Scene = /** @class */ (function () {
+    function Scene(canvas, options) {
+        this.canvas = canvas;
+        this.options = options;
+    }
+    return Scene;
+}());
+exports.Lumi = {
+    Scene: Scene
 };
-exports.sayHello = sayHello;
 
 })();
 

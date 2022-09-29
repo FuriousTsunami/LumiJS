@@ -7,6 +7,6 @@ class Scene {
   }
 }
 
-export default {
+export var Lumi = {
   Scene: Scene
 };
