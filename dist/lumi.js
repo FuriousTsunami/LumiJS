@@ -29,13 +29,35 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Lumi = void 0;
 var Scene = /** @class */ (function () {
     function Scene(canvas, options) {
+        if (options === void 0) { options = { gravity: 1 }; }
         this.canvas = canvas;
         this.options = options;
     }
     return Scene;
 }());
+var Body = /** @class */ (function () {
+    function Body() {
+        this.x = 10;
+    }
+    return Body;
+}());
+;
+var Camera = /** @class */ (function () {
+    function Camera(x, y, options) {
+        this.x = x;
+        this.y = y;
+        this.options = options;
+    }
+    return Camera;
+}());
+var test = new Camera(10, 50, {
+    follow: {
+        asd: "bola"
+    }
+});
 exports.Lumi = {
-    Scene: Scene
+    Scene: Scene,
+    Camera: Camera
 };
 
 })();

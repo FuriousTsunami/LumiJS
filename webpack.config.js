@@ -51,7 +51,7 @@ module.exports = {
     filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
     libraryTarget: "umd",
-    library: "lumijs",
+    library: "lumi",
     umdNamedDefine: true,
     clean: true
   },
