@@ -5,15 +5,21 @@ declare class Scene {
     };
     constructor(canvas: HTMLCanvasElement, options?: Object);
 }
-interface test {
-    x: Number;
-    y: Number;
+declare class Body {
+    width: Number;
+    height: Number;
+    restitution: Number;
+    collision: {
+        layer?: Number;
+    };
+    mass: Number;
+    constructor();
 }
 declare class Camera {
     x: Number;
     y: Number;
     options: {
-        follow?: test;
+        follow?: typeof Body;
         followBounds?: {
             x: Number;
             y: Number;

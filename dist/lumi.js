@@ -12,11 +12,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("lumijs", [], factory);
+		define("lumi", [], factory);
 	else if(typeof exports === 'object')
-		exports["lumijs"] = factory();
+		exports["lumi"] = factory();
 	else
-		root["lumijs"] = factory();
+		root["lumi"] = factory();
 })(self, () => {
 return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
@@ -37,11 +37,9 @@ var Scene = /** @class */ (function () {
 }());
 var Body = /** @class */ (function () {
     function Body() {
-        this.x = 10;
     }
     return Body;
 }());
-;
 var Camera = /** @class */ (function () {
     function Camera(x, y, options) {
         this.x = x;
@@ -50,11 +48,6 @@ var Camera = /** @class */ (function () {
     }
     return Camera;
 }());
-var test = new Camera(10, 50, {
-    follow: {
-        asd: "bola"
-    }
-});
 exports.Lumi = {
     Scene: Scene,
     Camera: Camera
