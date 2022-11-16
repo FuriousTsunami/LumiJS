@@ -1,11 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "CommonJS",
-    "lib": ["es2015", "dom"],
-    "rootDir": "./src/",
-    "outDir": "./dist/",
+    "target": "ES2017",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "lib": ["ES2017", "DOM"],  
+    "rootDir": "./",
+    "baseUrl": "./",
+    "outDir": "dist/",
     "sourceMap": true,
-    "declaration": true
-  }
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": false,
+    "allowSyntheticDefaultImports": true,
+    "noEmitOnError": true
+  },
+  "include": ["src/**/*"]
 }
