@@ -17,7 +17,8 @@
     "noUnusedParameters": true,
     "strictNullChecks": false,
     "allowSyntheticDefaultImports": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"]
 }

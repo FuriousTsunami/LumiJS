@@ -10,7 +10,8 @@
     "declaration": true,
     "declarationDir": "types",
     "declarationMap": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"]
 }

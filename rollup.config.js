@@ -2,6 +2,30 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
+import pkg from "./package.json" assert { type: "json" };
+
+var genFileHeader = function(name) {
+  return [
+    `/*!`,
+    ` * ${name} - obtained from LumiJS v${pkg.version}`,
+    ` * Compiled ${(new Date()).toUTCString().replace(/GMT/g, 'UTC')}`,
+    ` *`,
+    ` * Copyright 2019 Sunay Komarla`,
+    ` *`,
+    ` * Licensed under the Apache License, Version 2.0 (the "License");`,
+    ` * you may not use this file except in compliance with the License.`,
+    ` * You may obtain a copy of the License at`,
+    ` *`,
+    ` * http://www.apache.org/licenses/LICENSE-2.0`,
+    ` *`,
+    ` * Unless required by applicable law or agreed to in writing, software`,
+    ` * distributed under the License is distributed on an "AS IS" BASIS,`,
+    ` * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.`,
+    ` * See the License for the specific language governing permissions and`,
+    ` * limitations under the License.`,
+    ` */`,
+  ].join("\n");
+}
 
 export default [
   // UMD Bundle
@@ -12,7 +36,8 @@ export default [
       format: "umd",
       name: "lumi",
       exports: "named",
-      sourcemap: true
+      sourcemap: true,
+      banner: genFileHeader("lumi.js")
     },
     plugins: [
       resolve(),
@@ -28,7 +53,8 @@ export default [
       format: "umd",
       name: "lumi",
       exports: "named",
-      sourcemap: true
+      sourcemap: true,
+      banner: genFileHeader("lumi.min.js")
     },
     plugins: [
       resolve(),
@@ -44,7 +70,8 @@ export default [
       file: "dist/lumi.mjs",
       format: "es",
       exports: "named",
-      sourcemap: true
+      sourcemap: true,
+      banner: genFileHeader("lumi.mjs")
     },
     plugins: [
       resolve(),
@@ -59,7 +86,8 @@ export default [
       file: "dist/lumi.cjs",
       format: "cjs",
       exports: "named",
-      sourcemap: true
+      sourcemap: true,
+      banner: genFileHeader("lumi.cjs")
     },
     plugins: [
       resolve(),
