@@ -8,7 +8,7 @@ var genFileHeader = function(name) {
   return [
     `/*!`,
     ` * ${name} - obtained from LumiJS v${pkg.version}`,
-    ` * Compiled ${(new Date()).toUTCString().replace(/GMT/g, 'UTC')}`,
+    ` * Compiled ${((new Date()).toUTCString().slice(0, -12) + "(UTC)")}`,
     ` *`,
     ` * Copyright 2019 Sunay Komarla`,
     ` *`,
