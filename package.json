@@ -7,7 +7,7 @@
   "module": "dist/lumi.mjs",
   "types": "types/src/index.d.ts",
   "scripts": {
-    "build": "tsc --noEmit && rimraf dist && rollup -c && rimraf types && tsc -p tsconfig.d.json"
+    "build": "tsc --noEmit && rimraf dist && rollup -c && rimraf types && tsc -p tsconfig.types.json"
   },
   "repository": {
     "type": "git",
