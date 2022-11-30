@@ -1,6 +1,6 @@
 /*!
  * lumi.js - obtained from LumiJS v0.1.1
- * Compiled Thu, 17 Nov 2022 (UTC)
+ * Compiled Wed, 30 Nov 2022 (UTC)
  *
  * Copyright 2019 Sunay Komarla
  *
@@ -2333,10 +2333,10 @@
 
   // check if two segments intersect
   function intersects(p1, q1, p2, q2) {
-      var o1 = sign(area(p1, q1, p2));
-      var o2 = sign(area(p1, q1, q2));
-      var o3 = sign(area(p2, q2, p1));
-      var o4 = sign(area(p2, q2, q1));
+      var o1 = sign$1(area(p1, q1, p2));
+      var o2 = sign$1(area(p1, q1, q2));
+      var o3 = sign$1(area(p2, q2, p1));
+      var o4 = sign$1(area(p2, q2, q1));
 
       if (o1 !== o2 && o3 !== o4) return true; // general case
 
@@ -2353,7 +2353,7 @@
       return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
   }
 
-  function sign(num) {
+  function sign$1(num) {
       return num > 0 ? 1 : num < 0 ? -1 : 0;
   }
 
@@ -4328,6 +4328,12 @@
       arr[i] = arr[i + removeCount];
     }
     arr.length = len;
+  }
+
+  function sign(n) {
+    if (n === 0)
+      return 0;
+    return n < 0 ? -1 : 1;
   }
 
   let nextUid = 0;
@@ -13318,7 +13324,256 @@ ${this.fragmentSrc}`;
     return point;
   };
 
-  new Point();
+  const tempPoint = new Point();
+  const indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
+  let Sprite$1 = class Sprite extends Container {
+    constructor(texture) {
+      super();
+      this._anchor = new ObservablePoint(this._onAnchorUpdate, this, texture ? texture.defaultAnchor.x : 0, texture ? texture.defaultAnchor.y : 0);
+      this._texture = null;
+      this._width = 0;
+      this._height = 0;
+      this._tint = null;
+      this._tintRGB = null;
+      this.tint = 16777215;
+      this.blendMode = BLEND_MODES.NORMAL;
+      this._cachedTint = 16777215;
+      this.uvs = null;
+      this.texture = texture || Texture.EMPTY;
+      this.vertexData = new Float32Array(8);
+      this.vertexTrimmedData = null;
+      this._transformID = -1;
+      this._textureID = -1;
+      this._transformTrimmedID = -1;
+      this._textureTrimmedID = -1;
+      this.indices = indices;
+      this.pluginName = "batch";
+      this.isSprite = true;
+      this._roundPixels = settings.ROUND_PIXELS;
+    }
+    _onTextureUpdate() {
+      this._textureID = -1;
+      this._textureTrimmedID = -1;
+      this._cachedTint = 16777215;
+      if (this._width) {
+        this.scale.x = sign(this.scale.x) * this._width / this._texture.orig.width;
+      }
+      if (this._height) {
+        this.scale.y = sign(this.scale.y) * this._height / this._texture.orig.height;
+      }
+    }
+    _onAnchorUpdate() {
+      this._transformID = -1;
+      this._transformTrimmedID = -1;
+    }
+    calculateVertices() {
+      const texture = this._texture;
+      if (this._transformID === this.transform._worldID && this._textureID === texture._updateID) {
+        return;
+      }
+      if (this._textureID !== texture._updateID) {
+        this.uvs = this._texture._uvs.uvsFloat32;
+      }
+      this._transformID = this.transform._worldID;
+      this._textureID = texture._updateID;
+      const wt = this.transform.worldTransform;
+      const a = wt.a;
+      const b = wt.b;
+      const c = wt.c;
+      const d = wt.d;
+      const tx = wt.tx;
+      const ty = wt.ty;
+      const vertexData = this.vertexData;
+      const trim = texture.trim;
+      const orig = texture.orig;
+      const anchor = this._anchor;
+      let w0 = 0;
+      let w1 = 0;
+      let h0 = 0;
+      let h1 = 0;
+      if (trim) {
+        w1 = trim.x - anchor._x * orig.width;
+        w0 = w1 + trim.width;
+        h1 = trim.y - anchor._y * orig.height;
+        h0 = h1 + trim.height;
+      } else {
+        w1 = -anchor._x * orig.width;
+        w0 = w1 + orig.width;
+        h1 = -anchor._y * orig.height;
+        h0 = h1 + orig.height;
+      }
+      vertexData[0] = a * w1 + c * h1 + tx;
+      vertexData[1] = d * h1 + b * w1 + ty;
+      vertexData[2] = a * w0 + c * h1 + tx;
+      vertexData[3] = d * h1 + b * w0 + ty;
+      vertexData[4] = a * w0 + c * h0 + tx;
+      vertexData[5] = d * h0 + b * w0 + ty;
+      vertexData[6] = a * w1 + c * h0 + tx;
+      vertexData[7] = d * h0 + b * w1 + ty;
+      if (this._roundPixels) {
+        const resolution = settings.RESOLUTION;
+        for (let i = 0; i < vertexData.length; ++i) {
+          vertexData[i] = Math.round(vertexData[i] * resolution) / resolution;
+        }
+      }
+    }
+    calculateTrimmedVertices() {
+      if (!this.vertexTrimmedData) {
+        this.vertexTrimmedData = new Float32Array(8);
+      } else if (this._transformTrimmedID === this.transform._worldID && this._textureTrimmedID === this._texture._updateID) {
+        return;
+      }
+      this._transformTrimmedID = this.transform._worldID;
+      this._textureTrimmedID = this._texture._updateID;
+      const texture = this._texture;
+      const vertexData = this.vertexTrimmedData;
+      const orig = texture.orig;
+      const anchor = this._anchor;
+      const wt = this.transform.worldTransform;
+      const a = wt.a;
+      const b = wt.b;
+      const c = wt.c;
+      const d = wt.d;
+      const tx = wt.tx;
+      const ty = wt.ty;
+      const w1 = -anchor._x * orig.width;
+      const w0 = w1 + orig.width;
+      const h1 = -anchor._y * orig.height;
+      const h0 = h1 + orig.height;
+      vertexData[0] = a * w1 + c * h1 + tx;
+      vertexData[1] = d * h1 + b * w1 + ty;
+      vertexData[2] = a * w0 + c * h1 + tx;
+      vertexData[3] = d * h1 + b * w0 + ty;
+      vertexData[4] = a * w0 + c * h0 + tx;
+      vertexData[5] = d * h0 + b * w0 + ty;
+      vertexData[6] = a * w1 + c * h0 + tx;
+      vertexData[7] = d * h0 + b * w1 + ty;
+    }
+    _render(renderer) {
+      this.calculateVertices();
+      renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
+      renderer.plugins[this.pluginName].render(this);
+    }
+    _calculateBounds() {
+      const trim = this._texture.trim;
+      const orig = this._texture.orig;
+      if (!trim || trim.width === orig.width && trim.height === orig.height) {
+        this.calculateVertices();
+        this._bounds.addQuad(this.vertexData);
+      } else {
+        this.calculateTrimmedVertices();
+        this._bounds.addQuad(this.vertexTrimmedData);
+      }
+    }
+    getLocalBounds(rect) {
+      if (this.children.length === 0) {
+        if (!this._localBounds) {
+          this._localBounds = new Bounds();
+        }
+        this._localBounds.minX = this._texture.orig.width * -this._anchor._x;
+        this._localBounds.minY = this._texture.orig.height * -this._anchor._y;
+        this._localBounds.maxX = this._texture.orig.width * (1 - this._anchor._x);
+        this._localBounds.maxY = this._texture.orig.height * (1 - this._anchor._y);
+        if (!rect) {
+          if (!this._localBoundsRect) {
+            this._localBoundsRect = new Rectangle();
+          }
+          rect = this._localBoundsRect;
+        }
+        return this._localBounds.getRectangle(rect);
+      }
+      return super.getLocalBounds.call(this, rect);
+    }
+    containsPoint(point) {
+      this.worldTransform.applyInverse(point, tempPoint);
+      const width = this._texture.orig.width;
+      const height = this._texture.orig.height;
+      const x1 = -width * this.anchor.x;
+      let y1 = 0;
+      if (tempPoint.x >= x1 && tempPoint.x < x1 + width) {
+        y1 = -height * this.anchor.y;
+        if (tempPoint.y >= y1 && tempPoint.y < y1 + height) {
+          return true;
+        }
+      }
+      return false;
+    }
+    destroy(options) {
+      super.destroy(options);
+      this._texture.off("update", this._onTextureUpdate, this);
+      this._anchor = null;
+      const destroyTexture = typeof options === "boolean" ? options : options?.texture;
+      if (destroyTexture) {
+        const destroyBaseTexture = typeof options === "boolean" ? options : options?.baseTexture;
+        this._texture.destroy(!!destroyBaseTexture);
+      }
+      this._texture = null;
+    }
+    static from(source, options) {
+      const texture = source instanceof Texture ? source : Texture.from(source, options);
+      return new Sprite$1(texture);
+    }
+    set roundPixels(value) {
+      if (this._roundPixels !== value) {
+        this._transformID = -1;
+      }
+      this._roundPixels = value;
+    }
+    get roundPixels() {
+      return this._roundPixels;
+    }
+    get width() {
+      return Math.abs(this.scale.x) * this._texture.orig.width;
+    }
+    set width(value) {
+      const s = sign(this.scale.x) || 1;
+      this.scale.x = s * value / this._texture.orig.width;
+      this._width = value;
+    }
+    get height() {
+      return Math.abs(this.scale.y) * this._texture.orig.height;
+    }
+    set height(value) {
+      const s = sign(this.scale.y) || 1;
+      this.scale.y = s * value / this._texture.orig.height;
+      this._height = value;
+    }
+    get anchor() {
+      return this._anchor;
+    }
+    set anchor(value) {
+      this._anchor.copyFrom(value);
+    }
+    get tint() {
+      return this._tint;
+    }
+    set tint(value) {
+      this._tint = value;
+      this._tintRGB = (value >> 16) + (value & 65280) + ((value & 255) << 16);
+    }
+    get texture() {
+      return this._texture;
+    }
+    set texture(value) {
+      if (this._texture === value) {
+        return;
+      }
+      if (this._texture) {
+        this._texture.off("update", this._onTextureUpdate, this);
+      }
+      this._texture = value || Texture.EMPTY;
+      this._cachedTint = 16777215;
+      this._textureID = -1;
+      this._textureTrimmedID = -1;
+      if (value) {
+        if (value.baseTexture.valid) {
+          this._onTextureUpdate();
+        } else {
+          value.once("update", this._onTextureUpdate, this);
+        }
+      }
+    }
+  };
 
   const _Application = class {
     constructor(options) {
@@ -13418,18 +13673,57 @@ ${this.fragmentSrc}`;
   ResizePlugin.extension = ExtensionType.Application;
   extensions.add(ResizePlugin);
 
-  // import Collision from "./collision";
+  // import Physics from "./physics";
+  class Sprite extends Sprite$1 {
+      constructor(texture) {
+          super(texture);
+          this.texture = texture;
+      }
+      get globalX() {
+          return this.getGlobalPosition().x;
+      }
+      get globalY() {
+          return this.getGlobalPosition().y;
+      }
+      get centerX() {
+          return this.x + (this.width / 2);
+      }
+      get centerY() {
+          return this.y + (this.height / 2);
+      }
+      get halfWidth() {
+          return this.width / 2;
+      }
+      get halfHeight() {
+          return this.height / 2;
+      }
+  }
+  class Body {
+      constructor(x = 0, y = 0) {
+          this.x = x;
+          this.y = y;
+      }
+  }
+  class Entity {
+      constructor(body, sprite) {
+          this.body = body;
+          this.sprite = sprite;
+      }
+  }
   class Scene {
-      // collision: Collision;
+      // physics: Physics;
       constructor(rendererOptions) {
           this.renderer = new Renderer(rendererOptions);
           this.ticker = new Ticker();
           this.ticker.stop();
-          // this.collision = new Collision(PIXI);
+          // this.physics = new Physics();
       }
   }
-  var Lumi = {
-      Scene: Scene,
+  const Lumi = {
+      Sprite,
+      Body,
+      Entity,
+      Scene,
   };
 
   exports.Lumi = Lumi;
