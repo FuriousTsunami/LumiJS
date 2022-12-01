@@ -1,70 +1,94 @@
-import * as PIXI from "./pixiConfig";
-// import Physics from "./physics";
+// begin pixi.js imports
 
-class Sprite extends PIXI.Sprite {
-	constructor(texture?: PIXI.Texture) {
-		super(texture);
-		this.texture = texture;
-	}
+// import mixins first as they modify other pixi.js classes directly
+import "@pixi/mixin-get-global-position";
 
-	get globalX() {
-		return this.getGlobalPosition().x;
-	}
+// _ prefix is used for pixi.js imports to avoid naming conflicts
+import {
+  IRendererOptions as _IRendererOptions,
+  Renderer as _Renderer,
+  Texture as _Texture,
+  Ticker as _Ticker,
+} from "@pixi/core";
 
-	get globalY() {
-		return this.getGlobalPosition().y;
-	}
+import {
+  Sprite as _Sprite
+} from "@pixi/sprite";
 
-	get centerX() {
-		return this.x + (this.width / 2);
-	}
+// end pixi.js imports
 
-	get centerY() {
-		return this.y + (this.height / 2);
-	}
+// physics class import
+import Physics from "./physics";
 
-	get halfWidth() {
-		return this.width / 2;
-	}
+export class Sprite extends _Sprite {
+  constructor(texture?: _Texture) {
+    super(texture);
+    this.texture = texture;
+  }
 
-	get halfHeight() {
-		return this.height / 2;
-	}
+  get globalX() {
+    return this.getGlobalPosition().x;
+  }
+
+  get globalY() {
+    return this.getGlobalPosition().y;
+  }
+
+  get centerX() {
+    return this.x + (this.width / 2);
+  }
+
+  get centerY() {
+    return this.y + (this.height / 2);
+  }
+
+  get halfWidth() {
+    return this.width / 2;
+  }
+
+  get halfHeight() {
+    return this.height / 2;
+  }
 }
 
-class Body {
-	x: number;
-	y: number;
-	constructor(x = 0, y = 0) {
-		this.x = x;
-		this.y = y;
-	}
+export class Body {
+  x: number;
+  y: number;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
-class Entity {
-	body: Body;
-	sprite: Sprite;
-	constructor(body: Body, sprite: Sprite) {
-		this.body = body;
-		this.sprite = sprite;
-	}
+export class Entity {
+  body: Body;
+  sprite: Sprite;
+  constructor(body: Body, sprite: Sprite) {
+    this.body = body;
+    this.sprite = sprite;
+  }
 }
 
-class Scene {
-	renderer: PIXI.Renderer;
-	ticker: PIXI.Ticker;
-	// physics: Physics;
-	constructor(rendererOptions: PIXI.IRenderOptions) {
-		this.renderer = new PIXI.Renderer(rendererOptions);
-		this.ticker = new PIXI.Ticker();
-		this.ticker.stop();
-		// this.physics = new Physics();
-	}
+export class Scene {
+  renderer: _Renderer;
+  ticker: _Ticker;
+  physics: Physics;
+  constructor(rendererOptions: _IRendererOptions) {
+    this.renderer = new _Renderer(rendererOptions);
+    this.ticker = new _Ticker();
+    this.ticker.stop();
+    this.physics = new Physics();
+  }
 }
 
-export const Lumi = {
-	Sprite,
-	Body,
-	Entity,
-	Scene,
+/**
+ * Global Lumi object
+ */
+const Lumi = {
+  Sprite,
+  Body,
+  Entity,
+  Scene,
 };
+
+export default Lumi;
