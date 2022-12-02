@@ -1,5 +1,3 @@
-// begin pixi.js imports
-
 // import mixins first as they modify other pixi.js classes directly
 import "@pixi/mixin-get-global-position";
 
@@ -11,8 +9,6 @@ import {
 import {
   Sprite as _Sprite
 } from "@pixi/sprite";
-
-// end pixi.js imports
 
 export default class Physics {
   /* `addCollisionProperties` adds extra properties to sprites to help
