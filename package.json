@@ -1,11 +1,11 @@
 {
   "name": "lumijs",
   "version": "0.1.1",
-  "description": "",
+  "description": "Simplistic and compact game engine for the web.",
   "type": "module",
   "main": "dist/umd/lumi.js",
   "module": "dist/mjs/lumi.mjs",
-  "types": "types/src/index.d.ts",
+  "types": "types/global.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FuriousTsunami/LumiJS.git"
