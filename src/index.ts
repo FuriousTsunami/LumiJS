@@ -14,7 +14,7 @@ import {
 } from "@pixi/sprite";
 
 // physics class import
-import Physics from "./physics";
+// import Physics from "./physics";
 
 export class Sprite extends _Sprite {
   constructor(texture?: _Texture) {
@@ -68,12 +68,12 @@ export class Entity {
 export class Scene {
   renderer: _Renderer;
   ticker: _Ticker;
-  physics: Physics;
+  // physics: Physics;
   constructor(rendererOptions: _IRendererOptions) {
     this.renderer = new _Renderer(rendererOptions);
     this.ticker = new _Ticker();
     this.ticker.stop();
-    this.physics = new Physics();
+    // this.physics = new Physics();
   }
 }
 
