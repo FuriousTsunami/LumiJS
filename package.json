@@ -22,7 +22,7 @@
     "clean:types": "rimraf types/*",
     "clean": "run-s clean:*",
     "lint": "eslint --ext .js --ext .ts src --max-warnings 0",
-    "lintfix": "npm run lint -- --fix && eslint eslintrc.cjs --fix\"",
+    "lintfix": "npm run lint -- --fix",
     "types": "tsc --noEmit",
     "build:pkg": "rollup -c",
     "build:types": "tsc -p tsconfig.types.json && api-extractor run --local --verbose",
