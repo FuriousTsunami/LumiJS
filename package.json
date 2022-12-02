@@ -26,7 +26,7 @@
     "types": "tsc --noEmit",
     "build:pkg": "rollup -c",
     "build:types": "tsc -p tsconfig.types.json && api-extractor run --local --verbose",
-    "build": "run-s lint types clean build:*",
+    "build": "run-s lintfix types clean build:*",
     "test": "jest"
   },
   "pre-commit": [
