@@ -29,7 +29,7 @@
     "prebuild:types": "run-s clean:types",
     "build:types": "tsc -p tsconfig.types.json && api-extractor run --local --verbose",
     "dist": "run-s lintfix types build:*",
-    "test": "npx jest",
+    "test": "jest",
     "coverage": "npm run test",
     "prepare": "husky install"
   },
