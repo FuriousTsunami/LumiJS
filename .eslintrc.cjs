@@ -158,7 +158,7 @@ module.exports = {
     "jsx-quotes": [1, "prefer-double"],
     "key-spacing": [1, { beforeColon: false, afterColon: true, mode: "minimum" }],
     "keyword-spacing": [1, { before: true, after: true }],
-    "linebreak-style": [1, "windows"],
+    "linebreak-style": [1, "unix"],
     "lines-around-comment": 0,
     "max-depth": [1, 6],
     "max-len": [1, { code: 200, tabWidth: 2 }],
