@@ -46,6 +46,7 @@
     "@rollup/plugin-terser": "^0.1.0",
     "@rollup/plugin-typescript": "^9.0.2",
     "@types/jest": "^29.2.3",
+    "@types/matter-js": "^0.18.2",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "eslint": "^8.27.0",
@@ -71,6 +72,7 @@
     "@pixi/runner": "^7.0.3",
     "@pixi/settings": "^7.0.3",
     "@pixi/sprite": "^7.0.3",
-    "@pixi/ticker": "^7.0.3"
+    "@pixi/ticker": "^7.0.3",
+    "matter-js": "^0.18.0"
   }
 }

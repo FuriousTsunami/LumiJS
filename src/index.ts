@@ -68,12 +68,12 @@ export class Entity {
 export class Scene {
   renderer: _Renderer;
   ticker: _Ticker;
-  // physics: Physics;
+  // physics: object;
   constructor(rendererOptions: _IRendererOptions) {
     this.renderer = new _Renderer(rendererOptions);
     this.ticker = new _Ticker();
     this.ticker.stop();
-    // this.physics = new Physics();
+    // this.physics = Physics;
   }
 }
 
