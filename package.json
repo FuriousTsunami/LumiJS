@@ -30,7 +30,7 @@
     "prebuild:types": "run-s clean:types",
     "build:types": "tsc -p tsconfig.types.json && api-extractor run --local --verbose",
     "dist": "run-s lintfix types build:*",
-    "test": "jest --silent",
+    "test": "jest --silent --passWithNoTests",
     "coverage": "npm run test",
     "prepare": "husky install"
   },
